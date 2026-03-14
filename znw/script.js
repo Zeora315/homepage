@@ -1,14 +1,14 @@
-// --- 0. Theme Toggle Function ---
+// --- 0. 主题切换功能 ---
 const themeToggle = document.getElementById('theme-toggle');
 const htmlElement = document.documentElement;
 
-// Read theme settings from localStorage
+// 从localStorage读取主题设置
 const savedTheme = localStorage.getItem('theme') || 'light';
 if (savedTheme === 'dark') {
     htmlElement.setAttribute('data-theme', 'dark');
 }
 
-// Theme toggle function
+// 主题切换函数
 function toggleTheme() {
     const currentTheme = htmlElement.getAttribute('data-theme');
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
@@ -17,17 +17,17 @@ function toggleTheme() {
     localStorage.setItem('theme', newTheme);
 }
 
-// Bind click event
+// 绑定点击事件
 themeToggle.addEventListener('click', toggleTheme);
 
-// --- 0.1 Language Switch Function ---
+// --- 0.1 语言切换功能 ---
 const languageToggle = document.getElementById('language-toggle');
-let currentLanguage = 'en';
+let currentLanguage = 'znw';
 let languageMenuOpen = false;
 const languageMenu = document.getElementById('language-menu');
 const languageItems = document.querySelectorAll('.language-menu-item');
 
-// Toggle language menu display/hide
+// 切换语言菜单显示/隐藏
 function toggleLanguageMenu() {
     languageMenuOpen = !languageMenuOpen;
     if (languageMenuOpen) {
@@ -37,20 +37,20 @@ function toggleLanguageMenu() {
     }
 }
 
-// Select language
+// 选择语言
 function selectLanguage(lang) {
     if (lang === 'zh-CN') {
-        // Jump to Chinese page
-        window.location.href = '../index.html';
-    } else if (lang === 'znw') {
-        // Jump to Classical Chinese page
-        window.location.href = '../znw/';
+        // 跳转到中文页面
+        window.location.href = '../';
+    } else if (lang === 'en') {
+        // 跳转到英文页面
+        window.location.href = '../en/';
     } else {
-        currentLanguage = 'en';
+        currentLanguage = 'znw';
         updateLanguage();
-        showToast('Switched to English');
+        showToast('已切换到文言文');
         
-        // Update active status and checkmark
+        // 更新活动状态和勾选标记
         languageItems.forEach(item => {
             item.classList.remove('active');
             const checkIcon = item.querySelector('.language-check');
@@ -61,13 +61,13 @@ function selectLanguage(lang) {
         const selectedCheckIcon = selectedItem.querySelector('.language-check');
         if (selectedCheckIcon) selectedCheckIcon.style.display = 'block';
         
-        // Close menu
+        // 关闭菜单
         languageMenuOpen = false;
         languageMenu.classList.remove('show');
     }
 }
 
-// Close language menu when clicking elsewhere on the page
+// 点击页面其他地方关闭语言菜单
 document.addEventListener('click', function(event) {
     if (!languageMenu.contains(event.target) && !languageToggle.contains(event.target)) {
         languageMenuOpen = false;
@@ -75,13 +75,13 @@ document.addEventListener('click', function(event) {
     }
 });
 
-// Initialize language menu
+// 初始化语言菜单
 function initLanguageMenu() {
-    // Set default language
-    const defaultLang = currentLanguage === 'zh' ? 'zh-CN' : (currentLanguage === 'znw' ? 'znw' : 'en');
+    // 设置默认语言
+    const defaultLang = currentLanguage === 'zh' ? 'zh-CN' : 'znw';
     document.querySelector(`[data-lang="${defaultLang}"]`).classList.add('active');
     
-    // Initialize checkmarks
+    // 初始化勾选标记
     languageItems.forEach(item => {
         const checkIcon = item.querySelector('.language-check');
         if (checkIcon) {
@@ -93,7 +93,7 @@ function initLanguageMenu() {
         }
     });
     
-    // Add language item click events
+    // 添加语言项点击事件
     languageItems.forEach(item => {
         item.addEventListener('click', function() {
             selectLanguage(this.getAttribute('data-lang'));
@@ -101,7 +101,7 @@ function initLanguageMenu() {
     });
 }
 
-// Language toggle function (maintain backward compatibility)
+// 语言切换函数（保持向后兼容）
 function toggleLanguage() {
     toggleLanguageMenu();
 }
@@ -136,12 +136,7 @@ function updateLanguage() {
         'profile-desc': {
             zh: 'A student influencer in the tech field',
             en: 'A student influencer in the tech field',
-            znw: '数码门生，素习六艺：设计，派森，佛头少普，西艾艾丝三，杰艾丝，艾尺提艾姆艾，吉特'
-        },
-        'profile-badge': {
-            zh: 'PROFILE',
-            en: 'PROFILE',
-            znw: 'PROFILE'
+            znw: '数码门生，素习六艺'
         },
         'tech-inno-title': {
             zh: 'Tech Inno',
@@ -151,7 +146,7 @@ function updateLanguage() {
         'tech-inno-desc': {
             zh: 'Learning, experimenting, creating and innovating',
             en: 'Learning, experimenting, creating and innovating',
-            znw: '学·试·作·新'
+            znw: 'Learning, experimenting, creating and innovating'
         },
         'blog-title': {
             zh: 'Blog',
@@ -194,17 +189,17 @@ function updateLanguage() {
             znw: '点击下方图标选择操作'
         },
         'copy-btn': {
-            zh: '<i class="fa-regular fa-copy mr-2"></i> Copy ID / Account',
+            zh: '<i class="fa-regular fa-copy mr-2"></i> 复制 ID / 账号',
             en: '<i class="fa-regular fa-copy mr-2"></i> Copy ID / Account',
             znw: '<i class="fa-regular fa-copy mr-2"></i> 复制 ID / 账号'
         },
         'go-btn': {
-            zh: '<i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> Go to Link',
+            zh: '<i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> 前往链接',
             en: '<i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> Go to Link',
             znw: '<i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> 前往链接'
         },
         'cancel-btn': {
-            zh: 'Cancel',
+            zh: '取消',
             en: 'Cancel',
             znw: '取消'
         },
@@ -214,20 +209,20 @@ function updateLanguage() {
             znw: '&copy; 2026 zeora. Design by Apple Aesthetics.'
         },
         'language-tooltip': {
-            zh: 'Switch Language / 切换语言',
+            zh: '切换语言 / Switch Language',
             en: 'Switch Language / 切换语言',
             znw: '切换语言 / Switch Language'
         }
     };
     
-    // Update language toggle button tooltip
+    // 更新语言切换按钮提示
     document.querySelector('.language-tooltip').textContent = elements['language-tooltip'][currentLanguage];
     
-    // Update all elements' language
+    // 更新所有元素的语言
     Object.keys(elements).forEach(key => {
         const element = document.getElementById(key);
         if (element) {
-            if (key === 'philosophy-title' || key === 'copy-btn' || key === 'go-btn' || key === 'profile-badge') {
+            if (key === 'philosophy-title' || key === 'copy-btn' || key === 'go-btn') {
                 element.innerHTML = elements[key][currentLanguage];
             } else {
                 element.textContent = elements[key][currentLanguage];
@@ -236,17 +231,17 @@ function updateLanguage() {
     });
 }
 
-// Bind language toggle event
+// 绑定语言切换事件
 languageToggle.addEventListener('click', toggleLanguage);
 
-// Scroll to top function
+// 滚动到顶部功能
 function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// --- 1. Hello Rotation ---
+// --- 1. Hello 轮播 ---
 const helloText = document.getElementById('hero-text');
-const greetings = ["hello", "你好", "hola", "bonjour", "こんにちは", "ciao", "你好"];
+const greetings = ["善", "hello", "你好", "hola", "bonjour", "こんにちは", "ciao", "你好"];
 let index = 0;
 
 function rotateText() {
@@ -254,7 +249,7 @@ function rotateText() {
     helloText.style.transform = 'translateY(10px)';
     setTimeout(() => {
         index = (index + 1) % greetings.length;
-        helloText.textContent = greetings[index] + ".";
+        helloText.textContent = greetings[index] + "。";
         helloText.style.opacity = '1';
         helloText.style.transform = 'translateY(0)';
     }, 600);
@@ -295,7 +290,7 @@ function openModal(type, value, link, iconClass, color) {
     // Handle Buttons state
     const btnGo = document.getElementById('btn-go');
     if (!link) {
-        btnGo.style.display = 'none'; // e.g., QQ may not have a direct link
+        btnGo.style.display = 'none'; // 如 QQ 可能没有直接链接
     } else {
         btnGo.style.display = 'block';
     }
@@ -303,17 +298,17 @@ function openModal(type, value, link, iconClass, color) {
     // Update button text based on current language
     const elements = {
         'copy-btn': {
-            zh: '<i class="fa-regular fa-copy mr-2"></i> Copy ID / Account',
+            zh: '<i class="fa-regular fa-copy mr-2"></i> 复制 ID / 账号',
             en: '<i class="fa-regular fa-copy mr-2"></i> Copy ID / Account',
             znw: '<i class="fa-regular fa-copy mr-2"></i> 复制 ID / 账号'
         },
         'go-btn': {
-            zh: '<i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> Go to Link',
+            zh: '<i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> 前往链接',
             en: '<i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> Go to Link',
             znw: '<i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> 前往链接'
         },
         'cancel-btn': {
-            zh: 'Cancel',
+            zh: '取消',
             en: 'Cancel',
             znw: '取消'
         }
@@ -367,5 +362,5 @@ function showToast() {
     }, 2000);
 }
 
-// Initialize language menu after page load
+// 页面加载完成后初始化语言菜单
 document.addEventListener('DOMContentLoaded', initLanguageMenu);

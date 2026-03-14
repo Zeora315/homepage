@@ -42,16 +42,24 @@ function selectLanguage(lang) {
     if (lang === 'en') {
         // 跳转到英文页面
         window.location.href = 'en/';
+    } else if (lang === 'znw') {
+        // 跳转到文言文页面
+        window.location.href = 'znw/';
     } else {
         currentLanguage = 'zh';
         updateLanguage();
         showToast('已切换到中文');
         
-        // 更新活动状态
+        // 更新活动状态和勾选标记
         languageItems.forEach(item => {
             item.classList.remove('active');
+            const checkIcon = item.querySelector('.language-check');
+            if (checkIcon) checkIcon.style.display = 'none';
         });
-        document.querySelector(`[data-lang="${lang}"]`).classList.add('active');
+        const selectedItem = document.querySelector(`[data-lang="${lang}"]`);
+        selectedItem.classList.add('active');
+        const selectedCheckIcon = selectedItem.querySelector('.language-check');
+        if (selectedCheckIcon) selectedCheckIcon.style.display = 'block';
         
         // 关闭菜单
         languageMenuOpen = false;
@@ -70,8 +78,20 @@ document.addEventListener('click', function(event) {
 // 初始化语言菜单
 function initLanguageMenu() {
     // 设置默认语言
-    const defaultLang = currentLanguage === 'zh' ? 'zh-CN' : 'en';
+    const defaultLang = currentLanguage === 'zh' ? 'zh-CN' : (currentLanguage === 'znw' ? 'znw' : 'en');
     document.querySelector(`[data-lang="${defaultLang}"]`).classList.add('active');
+    
+    // 初始化勾选标记
+    languageItems.forEach(item => {
+        const checkIcon = item.querySelector('.language-check');
+        if (checkIcon) {
+            if (item.classList.contains('active')) {
+                checkIcon.style.display = 'block';
+            } else {
+                checkIcon.style.display = 'none';
+            }
+        }
+    });
     
     // 添加语言项点击事件
     languageItems.forEach(item => {
@@ -90,87 +110,113 @@ function updateLanguage() {
     const elements = {
         'hero-subtitle': {
             zh: 'Welcome to Zeora\'s Personal Space',
-            en: '欢迎来到 Zeora 的个人空间'
+            en: '欢迎来到 Zeora 的个人空间',
+            znw: '泽奥拉之私庭，敬迓君子'
         },
         'philosophy-title': {
             zh: 'Coding with <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">Communication & Innovation.</span>',
-            en: '编码与 <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">沟通与创新。</span>'
+            en: '编码与 <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">沟通与创新。</span>',
+            znw: '自胜者强，强行者有志。<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">志于内，则天下莫能与之争。</span>'
         },
         'philosophy-quote': {
             zh: '「征服自己，就能征服世界」',
-            en: '"Conquer yourself, and you can conquer the world"'
+            en: '"Conquer yourself, and you can conquer the world"',
+            znw: '「自胜者强，强行者有志。志于内，则天下莫能与之争。」'
         },
         'highlights-title': {
             zh: 'Highlights',
-            en: '亮点'
+            en: '亮点',
+            znw: ' Highlights'
         },
         'profile-title': {
             zh: 'Programming & Cybersecurity Learner.',
-            en: '编程与网络安全学习者。'
+            en: '编程与网络安全学习者。',
+            znw: '数码门生，素习六艺。'
         },
         'profile-desc': {
             zh: '一位 数码领域 学生党博主',
-            en: 'A student influencer in the tech field'
+            en: 'A student influencer in the tech field',
+            znw: '数码门生，素习六艺：设计，派森，佛头少普，西艾艾丝三，杰艾丝，艾尺提艾姆艾，吉特'
+        },
+        'profile-badge': {
+            zh: 'PROFILE',
+            en: 'PROFILE',
+            znw: 'PROFILE'
         },
         'tech-inno-title': {
             zh: 'Tech Inno',
-            en: '技术创新'
+            en: '技术创新',
+            znw: '学·试·作·新'
         },
         'tech-inno-desc': {
             zh: '学习、实验、创作与创新',
-            en: 'Learning, experimenting, creating and innovating'
+            en: 'Learning, experimenting, creating and innovating',
+            znw: '学·试·作·新'
         },
         'blog-title': {
-            zh: '博客',
-            en: 'Blog'
+            zh: 'Blog',
+            en: 'Blog',
+            znw: '博客'
         },
         'blog-desc': {
             zh: '分享科技与日常生活',
-            en: 'Sharing technology and daily life'
+            en: 'Sharing technology and daily life',
+            znw: '博文载道，兼述科技与生活之趣。'
         },
         'news-title': {
             zh: 'NewsNow',
-            en: 'NewsNow'
+            en: 'NewsNow',
+            znw: 'NewsNow'
         },
         'news-desc': {
             zh: '实时热点资讯',
-            en: 'Real-time hot news'
+            en: 'Real-time hot news',
+            znw: '时讯瞬达，天下事如指掌。'
         },
         'chat-title': {
-            zh: '即时聊天',
-            en: 'Chat'
+            zh: 'Chat',
+            en: 'Chat',
+            znw: '即时聊天'
         },
         'chat-desc': {
             zh: '端到端加密即时通讯',
-            en: 'End-to-end encrypted messaging'
+            en: 'End-to-end encrypted messaging',
+            znw: '君子慎密，语出即达，无泄于外。'
         },
         'contact-title': {
             zh: 'Get in touch.',
-            en: '联系我。'
+            en: '联系我。',
+            znw: '请择途以通音问。'
         },
         'contact-desc': {
-            zh: '点击下方图标选择操作',
-            en: 'Click the icons below to choose an action'
+            zh: 'Click the icons below to choose an action',
+            en: 'Click the icons below to choose an action',
+            znw: '点击下方图标选择操作'
         },
         'copy-btn': {
             zh: '<i class="fa-regular fa-copy mr-2"></i> 复制 ID / 账号',
-            en: '<i class="fa-regular fa-copy mr-2"></i> Copy ID / Account'
+            en: '<i class="fa-regular fa-copy mr-2"></i> Copy ID / Account',
+            znw: '<i class="fa-regular fa-copy mr-2"></i> 复制 ID / 账号'
         },
         'go-btn': {
             zh: '<i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> 前往链接',
-            en: '<i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> Go to Link'
+            en: '<i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> Go to Link',
+            znw: '<i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> 前往链接'
         },
         'cancel-btn': {
             zh: '取消',
-            en: 'Cancel'
+            en: 'Cancel',
+            znw: '取消'
         },
         'footer-copyright': {
             zh: '&copy; 2026 zeora. Design by Apple Aesthetics.',
-            en: '&copy; 2026 zeora. Designed by Apple Aesthetics.'
+            en: '&copy; 2026 zeora. Designed by Apple Aesthetics.',
+            znw: '&copy; 2026 zeora. Design by Apple Aesthetics.'
         },
         'language-tooltip': {
             zh: '切换语言 / Switch Language',
-            en: 'Switch Language / 切换语言'
+            en: 'Switch Language / 切换语言',
+            znw: '切换语言 / Switch Language'
         }
     };
     
@@ -181,7 +227,7 @@ function updateLanguage() {
     Object.keys(elements).forEach(key => {
         const element = document.getElementById(key);
         if (element) {
-            if (key === 'philosophy-title' || key === 'copy-btn' || key === 'go-btn') {
+            if (key === 'philosophy-title' || key === 'copy-btn' || key === 'go-btn' || key === 'profile-badge') {
                 element.innerHTML = elements[key][currentLanguage];
             } else {
                 element.textContent = elements[key][currentLanguage];
@@ -258,15 +304,18 @@ function openModal(type, value, link, iconClass, color) {
     const elements = {
         'copy-btn': {
             zh: '<i class="fa-regular fa-copy mr-2"></i> 复制 ID / 账号',
-            en: '<i class="fa-regular fa-copy mr-2"></i> Copy ID / Account'
+            en: '<i class="fa-regular fa-copy mr-2"></i> Copy ID / Account',
+            znw: '<i class="fa-regular fa-copy mr-2"></i> 复制 ID / 账号'
         },
         'go-btn': {
             zh: '<i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> 前往链接',
-            en: '<i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> Go to Link'
+            en: '<i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> Go to Link',
+            znw: '<i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> 前往链接'
         },
         'cancel-btn': {
             zh: '取消',
-            en: 'Cancel'
+            en: 'Cancel',
+            znw: '取消'
         }
     };
     

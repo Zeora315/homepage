@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - 页面未找到 | Zeora</title>
+    
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap-grid.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+
+    <link href="../style.css" rel="stylesheet">
+</head>
+<body class="antialiased">
+    <div id="toast"><i class="fa-solid fa-circle-check text-green-400"></i> <span id="toast-msg">Copied successfully</span></div>
+
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <!-- 左侧：语言切换 -->
+            <div class="language-menu-container">
+                <button class="navbar-item language-toggle" id="language-toggle" title="切换语言">
+                    <i class="fa-solid fa-language"></i>
+                </button>
+                <div class="language-menu" id="language-menu">
+                    <div class="language-menu-item" data-lang="zh-CN">
+                        <span class="language-code">中</span>
+                        <div class="language-info">
+                            <div class="language-name">简体中文 (中国大陆)</div>
+                            <div class="language-code-full">ZH-CN</div>
+                        </div>
+                        <i class="fa-solid fa-check language-check"></i>
+                    </div>
+                    <div class="language-menu-item" data-lang="en">
+                        <span class="language-code">En</span>
+                        <div class="language-info">
+                            <div class="language-name">English(Global)</div>
+                            <div class="language-code-full">EN</div>
+                        </div>
+                        <i class="fa-solid fa-check language-check"></i>
+                    </div>
+                    <div class="language-menu-item active" data-lang="znw">
+                        <span class="language-code">文</span>
+                        <div class="language-info">
+                            <div class="language-name">文言文 (中国大陆)</div>
+                            <div class="language-code-full">ZNW</div>
+                        </div>
+                        <i class="fa-solid fa-check language-check"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 中间：品牌 logo -->
+            <a href="../index.html" class="navbar-logo" onclick="scrollToTop()">
+                <img src="../img/zeora-logo-light.png" alt="Zeora" class="logo-light">
+                <img src="../img/zeora-logo-dark.png" alt="Zeora" class="logo-dark">
+            </a>
+            
+            <!-- 右侧：主题切换 -->
+            <button class="navbar-item theme-toggle" id="theme-toggle" aria-label="切换主题">
+                <img src="../img/theme-toggle-icon.svg" alt="切换主题" class="theme-icon-svg">
+            </button>
+        </div>
+    </nav>
+
+    <section class="h-screen w-full flex flex-col justify-center items-center relative">
+        <div class="text-center z-10 px-4">
+            <h1 class="text-9xl md:text-[12rem] font-bold tracking-tighter text-black mb-6 select-none mix-blend-darken opacity-20">
+                404
+            </h1>
+            <h2 id="error-title" class="text-3xl md:text-4xl font-bold text-black mb-4">
+                页面未寻
+            </h2>
+            <p id="error-desc" class="text-gray-500 text-lg md:text-xl leading-relaxed mb-8 max-w-md mx-auto">
+                抱歉，君所访之页不存在或已移。
+            </p>
+            <div class="flex flex-col md:flex-row gap-4 justify-center items-center">
+                <a href="../index.html" class="group px-8 py-3 bg-black text-white rounded-full font-medium transition-all hover:bg-gray-800 flex items-center gap-2">
+                    <i class="fa-solid fa-house"></i>
+                    <span id="btn-home">归首页</span>
+                </a>
+                <button onclick="history.back()" class="group px-8 py-3 bg-gray-100 text-gray-700 rounded-full font-medium transition-all hover:bg-gray-200 flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span id="btn-back">返前页</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // --- Theme Toggle ---
+        const themeToggle = document.getElementById('theme-toggle');
+        const htmlElement = document.documentElement;
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        if (savedTheme === 'dark') {
+            htmlElement.setAttribute('data-theme', 'dark');
+        }
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            htmlElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+
+        // --- Language Toggle ---
+        const languageToggle = document.getElementById('language-toggle');
+        let currentLanguage = 'znw';
+        let languageMenuOpen = false;
+        const languageMenu = document.getElementById('language-menu');
+        const languageItems = document.querySelectorAll('.language-menu-item');
+
+        function toggleLanguageMenu() {
+            languageMenuOpen = !languageMenuOpen;
+            if (languageMenuOpen) {
+                languageMenu.classList.add('show');
+            } else {
+                languageMenu.classList.remove('show');
+            }
+        }
+
+        function selectLanguage(lang) {
+            if (lang === 'zh-CN') {
+                window.location.href = '../404.html';
+            } else if (lang === 'en') {
+                window.location.href = '../en/404.html';
+            } else {
+                currentLanguage = 'znw';
+                updateLanguage();
+                showToast('已切换到文言文');
+                
+                languageItems.forEach(item => {
+                    item.classList.remove('active');
+                    const checkIcon = item.querySelector('.language-check');
+                    if (checkIcon) checkIcon.style.display = 'none';
+                });
+                const selectedItem = document.querySelector(`[data-lang="${lang}"]`);
+                selectedItem.classList.add('active');
+                const selectedCheckIcon = selectedItem.querySelector('.language-check');
+                if (selectedCheckIcon) selectedCheckIcon.style.display = 'block';
+                
+                languageMenuOpen = false;
+                languageMenu.classList.remove('show');
+            }
+        }
+
+        document.addEventListener('click', function(event) {
+            if (!languageMenu.contains(event.target) && !languageToggle.contains(event.target)) {
+                languageMenuOpen = false;
+                languageMenu.classList.remove('show');
+            }
+        });
+
+        function initLanguageMenu() {
+            const defaultLang = currentLanguage === 'zh' ? 'zh-CN' : (currentLanguage === 'znw' ? 'znw' : 'en');
+            document.querySelector(`[data-lang="${defaultLang}"]`).classList.add('active');
+            
+            languageItems.forEach(item => {
+                const checkIcon = item.querySelector('.language-check');
+                if (checkIcon) {
+                    if (item.classList.contains('active')) {
+                        checkIcon.style.display = 'block';
+                    } else {
+                        checkIcon.style.display = 'none';
+                    }
+                }
+            });
+            
+            languageItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    selectLanguage(this.getAttribute('data-lang'));
+                });
+            });
+        }
+
+        function toggleLanguage() {
+            toggleLanguageMenu();
+        }
+
+        function updateLanguage() {
+            const elements = {
+                'error-title': {
+                    zh: '页面未找到',
+                    en: 'Page Not Found',
+                    znw: '页面未寻'
+                },
+                'error-desc': {
+                    zh: '抱歉，您访问的页面不存在或已被移除。',
+                    en: 'Sorry, the page you are looking for does not exist or has been removed.',
+                    znw: '抱歉，君所访之页不存在或已移。'
+                },
+                'btn-home': {
+                    zh: '返回首页',
+                    en: 'Back to Home',
+                    znw: '归首页'
+                },
+                'btn-back': {
+                    zh: '返回上一页',
+                    en: 'Go Back',
+                    znw: '返前页'
+                }
+            };
+            
+            Object.keys(elements).forEach(key => {
+                const element = document.getElementById(key);
+                if (element) {
+                    element.textContent = elements[key][currentLanguage];
+                }
+            });
+        }
+
+        languageToggle.addEventListener('click', toggleLanguage);
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        document.addEventListener('DOMContentLoaded', initLanguageMenu);
+    </script>
+</body>
+</html>
