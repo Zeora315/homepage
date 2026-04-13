@@ -24,7 +24,7 @@
             </a>
             
             <!-- 中间：品牌logo -->
-            <a href="#" class="navbar-logo" onclick="scrollToTop()">
+            <a href="" class="navbar-logo" onclick="scrollToTop()">
                 <img src="img/zeora-logo-light.png" alt="Zeora" class="logo-light">
                 <img src="img/zeora-logo-dark.png" alt="Zeora" class="logo-dark">
             </a>
@@ -63,8 +63,8 @@
             <h1 id="hero-text" class="text-7xl md:text-9xl font-bold tracking-tighter text-black mb-6 select-none mix-blend-darken">
                 hello.
             </h1>
-            <p class="text-gray-500 text-sm md:text-base tracking-[0.3em] uppercase font-medium reveal-up" style="transition-delay: 0.2s;">
-                Welcome to Zeora's Personal Space
+            <p id="hero-subtitle" class="text-gray-500 text-sm md:text-base tracking-[0.3em] uppercase font-medium reveal-up" style="transition-delay: 0.2s;">
+                Loading...
             </p>
         </div>
 
@@ -328,6 +328,21 @@
   </div>
 </div>
 
+    <!-- 我的文章 RSS 展示 -->
+    <div class="row justify-content-center mb-32">
+        <div class="col-12 col-md-8 reveal-up">
+            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-10 pl-2">
+                我的文章
+            </h3>
+            
+            <div id="articles-container" class="space-y-6">
+                <div class="text-center py-12">
+                    <div class="animate-spin inline-block w-6 h-6 border-2 border-gray-300 border-t-gray-600 rounded-full mb-4"></div>
+                    <p class="text-gray-500 text-sm">正在加载最新文章...</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     </div>
 
