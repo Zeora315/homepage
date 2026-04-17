@@ -248,12 +248,17 @@ body {
 /* 导航栏样式 */
 .navbar {
     position: fixed;
-    top: 32px;
+    top: -100px; /* 初始位置在屏幕外 */
     left: 50%;
     transform: translateX(-50%);
     z-index: 1000;
     width: 95%;
     max-width: 650px;
+    transition: top 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.navbar.show {
+    top: 32px; /* 加载完成后滑动到正常位置 */
 }
 
 .navbar-container {

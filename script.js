@@ -20,14 +20,21 @@ function toggleTheme() {
 // 绑定点击事件
 themeToggle.addEventListener('click', toggleTheme);
 
-// 页面加载完成后隐藏加载动画
+// 页面加载完成后隐藏加载动画并显示菜单栏
 window.addEventListener('load', function() {
     setTimeout(function() {
         const loadingAnimation = document.getElementById('loading-animation');
+        const navbar = document.querySelector('.navbar');
+        
         if (loadingAnimation) {
             loadingAnimation.style.opacity = '0';
             setTimeout(function() {
                 loadingAnimation.style.display = 'none';
+                
+                // 显示菜单栏
+                if (navbar) {
+                    navbar.classList.add('show');
+                }
             }, 500);
         }
     }, 1000); // 1秒后开始淡出
