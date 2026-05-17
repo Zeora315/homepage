@@ -10,7 +10,7 @@
     <link href="https://cdn.bootcdn.net/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=2">
 </head>
 <body class="antialiased">
 
@@ -36,10 +36,6 @@
             </button>
         </div>
     </nav>
-
-<body class="antialiased">
-
-    <div id="toast"><i class="fa-solid fa-circle-check text-green-400"></i> <span id="toast-msg">Copied successfully</span></div>
 
     <div id="contact-modal" class="modal-overlay" onclick="closeModal(event)">
         <div class="ios-action-sheet" onclick="event.stopPropagation()">
@@ -223,11 +219,11 @@
                     </div>
                 </div>
             </div>
-            <div class="carousel-nav">
-                <button class="shadow__btn carousel-btn carousel-btn-prev">
+            <div class="carousel-controls">
+                <button class="carousel-btn carousel-btn-prev">
                     <i class="fa-solid fa-chevron-left"></i>
                 </button>
-                <button class="shadow__btn carousel-btn carousel-btn-next">
+                <button class="carousel-btn carousel-btn-next">
                     <i class="fa-solid fa-chevron-right"></i>
                 </button>
             </div>
@@ -245,19 +241,32 @@
                     stretch: 0,
                     depth: 100,
                     modifier: 2,
-                    slideShadows: false,
+                    slideShadows: true,
                 },
                 loop: true,
-                loopAdditionalSlides: 3,
-                autoplay: {
-                    delay: 3000,
-                    disableOnInteraction: false,
-                },
                 navigation: {
                     nextEl: '.carousel-btn-next',
                     prevEl: '.carousel-btn-prev',
                 },
-                speed: 500,
+                breakpoints: {
+                    320: {
+                        slidesPerView: 1,
+                    },
+                    768: {
+                        slidesPerView: 3,
+                        coverflowEffect: {
+                            depth: 80,
+                            modifier: 1.5,
+                        }
+                    },
+                    1024: {
+                        slidesPerView: 3,
+                        coverflowEffect: {
+                            depth: 80,
+                            modifier: 1.5,
+                        }
+                    }
+                }
             });
         </script>
 
