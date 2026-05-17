@@ -8,6 +8,7 @@
     <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap-grid.min.css" rel="stylesheet">
     <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.bootcdn.net/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -196,203 +197,69 @@
             </div>
         </div>
 
-        <div class="py-20">
-            <div class="max-w-4xl mx-auto px-4">
-                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-12 text-center">
-                    Timeline
+        <!-- 图片轮播区域 -->
+        <div class="carousel-section py-20">
+            <div class="container mx-auto px-4 mb-8" style="max-width: 1100px;">
+                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest text-center">
+                    Gallery
                 </h3>
-
-                <div class="relative">
-                    <!-- 时间线竖线 -->
-                    <div class="absolute left-1/2 transform -translate-x-px h-full w-0.5 bg-gray-200"></div>
-                    
-                    <div class="space-y-16">
-                        <!-- 2025 诺贝尔奖的觊觎者 -->
-                        <div class="relative flex items-center justify-center">
-                            <div class="w-1/2 pr-8 text-right">
-                                <span class="inline-block text-xs font-mono text-gray-600 bg-gray-50 px-3 py-1 rounded-full border border-gray-200">
-                                    2025
-                                </span>
-                                <h4 class="text-xl font-bold text-black mt-3">
-                                    诺贝尔奖的觊觎者
-                                </h4>
-                            </div>
-                            <div class="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-400 rounded-full border-4 border-white shadow-sm z-10"></div>
-                            <div class="w-1/2 pl-8"></div>
-                        </div>
-
-                        <!-- 2025 梦游国度已逾九十 -->
-                        <div class="relative flex items-center justify-center">
-                            <div class="w-1/2 pr-8 text-right"></div>
-                            <div class="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-400 rounded-full border-4 border-white shadow-sm z-10"></div>
-                            <div class="w-1/2 pl-8">
-                                <span class="inline-block text-xs font-mono text-gray-600 bg-gray-50 px-3 py-1 rounded-full border border-gray-200">
-                                    2025
-                                </span>
-                                <h4 class="text-xl font-bold text-black mt-3">
-                                    梦游国度已逾九十
-                                </h4>
-                            </div>
-                        </div>
-
-                        <!-- 2024 百亿彩票项目参与者 -->
-                        <div class="relative flex items-center justify-center">
-                            <div class="w-1/2 pr-8 text-right">
-                                <span class="inline-block text-xs font-mono text-gray-600 bg-gray-50 px-3 py-1 rounded-full border border-gray-200">
-                                    2024
-                                </span>
-                                <h4 class="text-xl font-bold text-black mt-3">
-                                    百亿彩票项目参与者
-                                </h4>
-                            </div>
-                            <div class="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-400 rounded-full border-4 border-white shadow-sm z-10"></div>
-                            <div class="w-1/2 pl-8"></div>
-                        </div>
-
-                        <!-- 2024 CHAGEE、Mixue、Starbucks、Luckin Coffee等品牌饮用者 -->
-                        <div class="relative flex items-center justify-center">
-                            <div class="w-1/2 pr-8 text-right"></div>
-                            <div class="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-400 rounded-full border-4 border-white shadow-sm z-10"></div>
-                            <div class="w-1/2 pl-8">
-                                <span class="inline-block text-xs font-mono text-gray-600 bg-gray-50 px-3 py-1 rounded-full border border-gray-200">
-                                    2024
-                                </span>
-                                <h4 class="text-xl font-bold text-black mt-3">
-                                    CHAGEE、Mixue、Starbucks、Luckin Coffee等品牌饮用者
-                                </h4>
-                            </div>
-                        </div>
-
-                        <!-- 2023 新冠疫情幸存者 -->
-                        <div class="relative flex items-center justify-center">
-                            <div class="w-1/2 pr-8 text-right">
-                                <span class="inline-block text-xs font-mono text-gray-600 bg-gray-50 px-3 py-1 rounded-full border border-gray-200">
-                                    2023
-                                </span>
-                                <h4 class="text-xl font-bold text-black mt-3">
-                                    新冠疫情幸存者
-                                </h4>
-                            </div>
-                            <div class="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-400 rounded-full border-4 border-white shadow-sm z-10"></div>
-                            <div class="w-1/2 pl-8"></div>
-                        </div>
-
-                        <!-- 2022 《和平精英》项目的资深特种兵 -->
-                        <div class="relative flex items-center justify-center">
-                            <div class="w-1/2 pr-8 text-right"></div>
-                            <div class="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-400 rounded-full border-4 border-white shadow-sm z-10"></div>
-                            <div class="w-1/2 pl-8">
-                                <span class="inline-block text-xs font-mono text-gray-600 bg-gray-50 px-3 py-1 rounded-full border border-gray-200">
-                                    2022
-                                </span>
-                                <h4 class="text-xl font-bold text-black mt-3">
-                                    《和平精英》项目的资深特种兵
-                                </h4>
-                            </div>
-                        </div>
-
-                        <!-- 2022 国际奥委会"奥林匹克奖杯"获得者 -->
-                        <div class="relative flex items-center justify-center">
-                            <div class="w-1/2 pr-8 text-right">
-                                <span class="inline-block text-xs font-mono text-gray-600 bg-gray-50 px-3 py-1 rounded-full border border-gray-200">
-                                    2022
-                                </span>
-                                <h4 class="text-xl font-bold text-black mt-3">
-                                    国际奥委会"奥林匹克奖杯"获得者
-                                </h4>
-                            </div>
-                            <div class="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-400 rounded-full border-4 border-white shadow-sm z-10"></div>
-                            <div class="w-1/2 pl-8"></div>
-                        </div>
-
-                        <!-- 2021 中国移动的战略合作伙伴 -->
-                        <div class="relative flex items-center justify-center">
-                            <div class="w-1/2 pr-8 text-right"></div>
-                            <div class="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-400 rounded-full border-4 border-white shadow-sm z-10"></div>
-                            <div class="w-1/2 pl-8">
-                                <span class="inline-block text-xs font-mono text-gray-600 bg-gray-50 px-3 py-1 rounded-full border border-gray-200">
-                                    2021
-                                </span>
-                                <h4 class="text-xl font-bold text-black mt-3">
-                                    中国移动的战略合作伙伴
-                                </h4>
-                            </div>
-                        </div>
-
-                        <!-- 2019 地球卫士联合获奖人 -->
-                        <div class="relative flex items-center justify-center">
-                            <div class="w-1/2 pr-8 text-right">
-                                <span class="inline-block text-xs font-mono text-gray-600 bg-gray-50 px-3 py-1 rounded-full border border-gray-200">
-                                    2019
-                                </span>
-                                <h4 class="text-xl font-bold text-black mt-3">
-                                    地球卫士联合获奖人
-                                </h4>
-                            </div>
-                            <div class="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-400 rounded-full border-4 border-white shadow-sm z-10"></div>
-                            <div class="w-1/2 pl-8"></div>
-                        </div>
-
-                        <!-- 2018 持有世界第二大经济体国家的身份证 -->
-                        <div class="relative flex items-center justify-center">
-                            <div class="w-1/2 pr-8 text-right"></div>
-                            <div class="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-400 rounded-full border-4 border-white shadow-sm z-10"></div>
-                            <div class="w-1/2 pl-8">
-                                <span class="inline-block text-xs font-mono text-gray-600 bg-gray-50 px-3 py-1 rounded-full border border-gray-200">
-                                    2018
-                                </span>
-                                <h4 class="text-xl font-bold text-black mt-3">
-                                    持有世界第二大经济体国家的身份证
-                                </h4>
-                            </div>
-                        </div>
-
-                        <!-- 2011 太阳系第三行星合法居住权终身认证勋章 -->
-                        <div class="relative flex items-center justify-center">
-                            <div class="w-1/2 pr-8 text-right">
-                                <span class="inline-block text-xs font-mono text-gray-600 bg-gray-50 px-3 py-1 rounded-full border border-gray-200">
-                                    2011
-                                </span>
-                                <h4 class="text-xl font-bold text-black mt-3">
-                                    太阳系第三行星合法居住权终身认证勋章
-                                </h4>
-                            </div>
-                            <div class="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-400 rounded-full border-4 border-white shadow-sm z-10"></div>
-                            <div class="w-1/2 pl-8"></div>
-                        </div>
-
-                        <!-- 2011 地球大气压强适配终身达标者 -->
-                        <div class="relative flex items-center justify-center">
-                            <div class="w-1/2 pr-8 text-right"></div>
-                            <div class="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-400 rounded-full border-4 border-white shadow-sm z-10"></div>
-                            <div class="w-1/2 pl-8">
-                                <span class="inline-block text-xs font-mono text-gray-600 bg-gray-50 px-3 py-1 rounded-full border border-gray-200">
-                                    2011
-                                </span>
-                                <h4 class="text-xl font-bold text-black mt-3">
-                                    地球大气压强适配终身达标者
-                                </h4>
-                            </div>
-                        </div>
-
-                        <!-- 2011 地球磁场保护计划终身受益人 -->
-                        <div class="relative flex items-center justify-center">
-                            <div class="w-1/2 pr-8 text-right">
-                                <span class="inline-block text-xs font-mono text-gray-600 bg-gray-50 px-3 py-1 rounded-full border border-gray-200">
-                                    2011
-                                </span>
-                                <h4 class="text-xl font-bold text-black mt-3">
-                                    地球磁场保护计划终身受益人
-                                </h4>
-                            </div>
-                            <div class="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-400 rounded-full border-4 border-white shadow-sm z-10"></div>
-                            <div class="w-1/2 pl-8"></div>
-                        </div>
+            </div>
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=400&fit=crop" alt="风景" />
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=300&h=400&fit=crop" alt="代码" />
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=300&h=400&fit=crop" alt="团队" />
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=300&h=400&fit=crop" alt="编程" />
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=300&h=400&fit=crop" alt="设计" />
                     </div>
                 </div>
             </div>
+            <div class="carousel-nav">
+                <button class="shadow__btn carousel-btn carousel-btn-prev">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <button class="shadow__btn carousel-btn carousel-btn-next">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
         </div>
 
+        <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+        <script>
+            var swiper = new Swiper('.carousel-section .swiper-container', {
+                effect: 'coverflow',
+                grabCursor: true,
+                centeredSlides: true,
+                slidesPerView: 'auto',
+                coverflowEffect: {
+                    rotate: 0,
+                    stretch: 0,
+                    depth: 100,
+                    modifier: 2,
+                    slideShadows: false,
+                },
+                loop: true,
+                loopAdditionalSlides: 3,
+                autoplay: {
+                    delay: 3000,
+                    disableOnInteraction: false,
+                },
+                navigation: {
+                    nextEl: '.carousel-btn-next',
+                    prevEl: '.carousel-btn-prev',
+                },
+                speed: 500,
+            });
+        </script>
 
     </div>
 
