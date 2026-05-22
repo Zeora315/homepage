@@ -88,17 +88,7 @@ http://localhost:8000
 </div>
 ```
 
-## 浏览器兼容
-
-- Chrome 90+
-- Edge 90+
-- Firefox 88+
-- Safari 14+
-
 ## 许可证
 
 MIT License
 
-## 作者
-
-Zeora
