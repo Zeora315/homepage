@@ -28,6 +28,10 @@
             <a href="" class="navbar-logo" onclick="scrollToTop()">
                 <img src="img/zeora-logo-light.png" alt="Zeora" class="logo-light">
                 <img src="img/zeora-logo-dark.png" alt="Zeora" class="logo-dark">
+                <span id="nav-music-lyrics" class="nav-music-lyrics">歌词加载中...</span>
+                <button id="nav-music-toggle" class="nav-music-toggle" type="button" aria-label="暂停播放">
+                    <i class="fa-solid fa-pause"></i>
+                </button>
             </a>
             
             <!-- 右侧：主题切换 -->
@@ -55,17 +59,28 @@
         </div>
     </div>
 
-    <section class="h-screen w-full flex flex-col justify-center items-center relative">
-        <div class="text-center z-10">
-            <h1 id="hero-text" class="text-7xl md:text-9xl font-bold tracking-tighter text-black mb-6 select-none mix-blend-darken">
-                hello.
-            </h1>
-            <p id="hero-subtitle" class="text-gray-500 text-sm md:text-base tracking-[0.3em] uppercase font-medium reveal-up" style="transition-delay: 0.2s;">
-                Loading...
-            </p>
+    <section class="hero-profile-section h-screen w-full flex flex-col justify-center relative">
+        <div class="hero-profile-container z-10 reveal-up">
+            <div class="hero-terminal-pill">
+                <span class="hero-terminal-dot"></span>
+                <span>~ /hello-world</span>
+                <span class="hero-terminal-cursor">$</span>
+            </div>
+
+            <div class="hero-profile-content">
+                <img class="hero-avatar" src="https://img.315996.xyz/blog-logo/1770705763501.webp" alt="Zeora 头像">
+                <div class="hero-profile-copy">
+                    <h1 id="hero-text" class="hero-profile-title" data-static="true">
+                        Hi there，I‘am Zeora
+                    </h1>
+                    <p id="hero-subtitle" class="hero-profile-subtitle">
+                        Loading...
+                    </p>
+                </div>
+            </div>
         </div>
 
-        <div class="absolute bottom-12 animate-bounce cursor-pointer opacity-40 hover:opacity-100 transition-opacity" onclick="scrollToId('philosophy')">
+        <div class="hero-scroll-indicator animate-bounce cursor-pointer opacity-40 hover:opacity-100 transition-opacity" onclick="scrollToId('philosophy')">
             <i class="fa-solid fa-chevron-down text-2xl"></i>
         </div>
     </section>
@@ -269,6 +284,46 @@
                 }
             });
         </script>
+
+        <!-- 音乐播放器 -->
+        <section class="music-section reveal-up" aria-labelledby="music-title">
+            <div class="container mx-auto px-4" style="max-width: 900px;">
+                <h3 id="music-title" class="text-xs font-bold text-gray-400 uppercase tracking-widest text-center mb-8">
+                    Music
+                </h3>
+
+                <div class="music-card">
+                    <div class="music-cover">
+                        <img id="music-cover-img" src="https://y.qq.com/music/photo_new/T002R300x300M000002eFUFm2XYZ7z_2.jpg?max_age=2592000" alt="音乐封面">
+                    </div>
+
+                    <div class="music-meta">
+                        <h4 id="music-song-title">青花瓷</h4>
+                        <p id="music-song-artist">周杰伦</p>
+                    </div>
+
+                    <div class="music-progress-wrap">
+                        <span id="music-current-time">0:00</span>
+                        <input id="music-progress" class="music-progress" type="range" min="0" max="100" value="0" aria-label="音乐播放进度">
+                        <span id="music-duration">0:00</span>
+                    </div>
+
+                    <div class="music-controls">
+                        <button id="music-prev" class="music-btn music-btn-ghost" aria-label="上一首">
+                            <i class="fa-solid fa-backward-step"></i>
+                        </button>
+                        <button id="music-play" class="music-btn music-btn-primary" aria-label="播放或暂停">
+                            <i class="fa-solid fa-play"></i>
+                        </button>
+                        <button id="music-next" class="music-btn music-btn-ghost" aria-label="下一首">
+                            <i class="fa-solid fa-forward-step"></i>
+                        </button>
+                    </div>
+
+                    <audio id="music-audio" preload="metadata"></audio>
+                </div>
+            </div>
+        </section>
 
     </div>
 
