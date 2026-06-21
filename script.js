@@ -35,7 +35,11 @@ window.addEventListener('load', function() {
                 if (navbar) {
                     navbar.classList.add('show');
                 }
+
+                document.body.classList.add('hero-ready');
             }, 500);
+        } else {
+            document.body.classList.add('hero-ready');
         }
     }, 1000); // 1秒后开始淡出
 });
