@@ -20,6 +20,44 @@ function toggleTheme() {
 // 绑定点击事件
 themeToggle.addEventListener('click', toggleTheme);
 
+// --- 0.1 顶部菜单跳转 ---
+const navMenuToggle = document.getElementById('nav-menu-toggle');
+const navSectionMenu = document.getElementById('nav-section-menu');
+
+function closeNavSectionMenu() {
+    navMenuToggle?.classList.remove('is-open');
+    navMenuToggle?.setAttribute('aria-expanded', 'false');
+    navSectionMenu?.classList.remove('open');
+    navSectionMenu?.setAttribute('aria-hidden', 'true');
+}
+
+function openNavSectionMenu() {
+    navMenuToggle?.classList.add('is-open');
+    navMenuToggle?.setAttribute('aria-expanded', 'true');
+    navSectionMenu?.classList.add('open');
+    navSectionMenu?.setAttribute('aria-hidden', 'false');
+}
+
+navMenuToggle?.addEventListener('click', (event) => {
+    event.stopPropagation();
+    if (navSectionMenu?.classList.contains('open')) {
+        closeNavSectionMenu();
+    } else {
+        openNavSectionMenu();
+    }
+});
+
+navSectionMenu?.addEventListener('click', (event) => {
+    event.stopPropagation();
+    const button = event.target.closest('button[data-target]');
+    if (!button) return;
+
+    scrollToId(button.dataset.target);
+    closeNavSectionMenu();
+});
+
+document.addEventListener('click', closeNavSectionMenu);
+
 // 页面加载完成后隐藏加载动画并显示菜单栏
 window.addEventListener('load', function() {
     setTimeout(function() {

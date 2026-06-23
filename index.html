@@ -19,10 +19,17 @@
     <!-- 导航栏 -->
     <nav class="navbar">
         <div class="navbar-container">
-            <!-- 左侧：博客快捷入口 -->
-            <a href="https://blog.zeora.top" target="_blank" class="navbar-item" title="进入博客">
-                <i class="fa-solid fa-book-open"></i>
-            </a>
+            <!-- 左侧：页面菜单 -->
+            <button class="navbar-item nav-menu-toggle" id="nav-menu-toggle" type="button" aria-label="打开菜单" aria-expanded="false">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <div class="nav-section-menu" id="nav-section-menu" aria-hidden="true">
+                <button type="button" data-target="websites"><i class="fa-solid fa-globe"></i><span>网站</span></button>
+                <button type="button" data-target="gallery"><i class="fa-solid fa-images"></i><span>相册</span></button>
+                <button type="button" data-target="music"><i class="fa-solid fa-music"></i><span>音乐</span></button>
+                <button type="button" data-target="social"><i class="fa-solid fa-address-card"></i><span>社交</span></button>
+            </div>
             
             <!-- 中间：品牌logo -->
             <a href="" class="navbar-logo" onclick="scrollToTop()">
@@ -125,85 +132,91 @@
                     </div>
                 </div>
 
-                <div class="col-12 col-md-4 reveal-up" style="transition-delay: 200ms;">
-                    <a href="https://blog.zeora.top" class="block h-full group">
-                        <div class="bento-card p-8 relative">
-                            <div class="absolute top-4 right-4 bg-gray-100 w-10 h-10 rounded-full flex items-center justify-center group-hover:bg-black group-hover:text-white transition-colors">
-                                <i class="fa-solid fa-arrow-right"></i>
-                            </div>
-                            <div class="mt-12">
-                                <i class="fa-solid fa-book-open text-3xl mb-4 text-gray-800"></i>
-                                <h4 class="text-xl font-bold text-black">Blog</h4>
-                                <p class="text-sm text-gray-500 mt-2">分享科技与日常生活</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-
-                <div class="col-12 col-md-4 reveal-up" style="transition-delay: 300ms;">
-                    <a href="https://chat.315996.xyz/" class="block h-full group">
-                        <div class="bento-card p-8 relative">
-                            <div class="absolute top-4 right-4 bg-gray-100 w-10 h-10 rounded-full flex items-center justify-center group-hover:bg-black group-hover:text-white transition-colors">
-                                <i class="fa-solid fa-arrow-right"></i>
-                            </div>
-                            <div class="mt-12">
-                                <i class="fa-solid fa-comments text-3xl mb-4 text-gray-800"></i>
-                                <h4 class="text-xl font-bold text-black">即时通讯</h4>
-                                <p class="text-sm text-gray-500 mt-2">端到端加密即时通讯</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-
-                <div class="col-12 col-md-4 reveal-up" style="transition-delay: 400ms;">
-                     <a href="https://news.zeora.top/" class="block h-full group">
-                        <div class="bento-card p-8 relative">
-                            <div class="absolute top-4 right-4 bg-gray-100 w-10 h-10 rounded-full flex items-center justify-center group-hover:bg-black group-hover:text-white transition-colors">
-                                <i class="fa-solid fa-arrow-right"></i>
-                            </div>
-                            <div class="mt-12">
-                                <i class="fa-solid fa-newspaper text-3xl mb-4 text-gray-800"></i>
-                                <h4 class="text-xl font-bold text-black">NewsNow</h4>
-                                <p class="text-sm text-gray-500 mt-2">实时热点资讯</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-
-                <div class="col-12 col-md-4 reveal-up" style="transition-delay: 0ms;">
-                    <a href="https://status.zeora.top/" class="block h-full group">
-                        <div class="bento-card p-8 relative">
-                            <div class="absolute top-4 right-4 bg-gray-100 w-10 h-10 rounded-full flex items-center justify-center group-hover:bg-black group-hover:text-white transition-colors">
-                                <i class="fa-solid fa-arrow-right"></i>
-                            </div>
-                            <div class="mt-12">
-                                <i class="fa-solid fa-server text-3xl mb-4 text-gray-800"></i>
-                                <h4 class="text-xl font-bold text-black">Status</h4>
-                                <p class="text-sm text-gray-500 mt-2">服务状态监控</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-
-                <div class="col-12 col-md-4 reveal-up" style="transition-delay: 0ms;">
-                    <a href="https://z-bbs.page.gd/" class="block h-full group">
-                        <div class="bento-card p-8 relative">
-                            <div class="absolute top-4 right-4 bg-gray-100 w-10 h-10 rounded-full flex items-center justify-center group-hover:bg-black group-hover:text-white transition-colors">
-                                <i class="fa-solid fa-arrow-right"></i>
-                            </div>
-                            <div class="mt-12">
-                                <i class="fa-solid fa-users text-3xl mb-4 text-gray-800"></i>
-                                <h4 class="text-xl font-bold text-black">论坛BBS</h4>
-                                <p class="text-sm text-gray-500 mt-2">社区交流平台</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
+                
+                
             </div>
         </div>
 
+        <!-- 服务入口区域 -->
+        <section id="websites" class="services-section reveal-up" aria-labelledby="services-title">
+            <div class="container mx-auto px-4" style="max-width: 1100px;">
+                <h3 id="services-title" class="text-xs font-bold text-gray-400 uppercase tracking-widest text-center mb-10">
+                    网站
+                </h3>
+
+                <div class="services-grid">
+                    <article class="service-item">
+                        <div class="service-icon service-icon-blog">
+                            <i class="fa-solid fa-book-open"></i>
+                        </div>
+                        <div class="service-content">
+                            <div class="service-title-row">
+                                <h4>Blog</h4>
+                                <span class="service-badge hot">热门</span>
+                            </div>
+                            <p>分享科技与日常生活</p>
+                            <a href="https://blog.zeora.top" class="service-link" target="_blank" rel="noopener noreferrer">访问</a>
+                        </div>
+                    </article>
+
+                    <article class="service-item">
+                        <div class="service-icon service-icon-chat">
+                            <i class="fa-solid fa-comments"></i>
+                        </div>
+                        <div class="service-content">
+                            <div class="service-title-row">
+                                <h4>即时通讯</h4>
+                            </div>
+                            <p>端到端加密即时通讯</p>
+                            <a href="https://chat.315996.xyz/" class="service-link" target="_blank" rel="noopener noreferrer">访问</a>
+                        </div>
+                    </article>
+
+                    <article class="service-item">
+                        <div class="service-icon service-icon-news">
+                            <i class="fa-solid fa-newspaper"></i>
+                        </div>
+                        <div class="service-content">
+                            <div class="service-title-row">
+                                <h4>NewsNow</h4>
+                                <span class="service-badge new">新品</span>
+                            </div>
+                            <p>实时热点资讯</p>
+                            <a href="https://news.zeora.top/" class="service-link" target="_blank" rel="noopener noreferrer">访问</a>
+                        </div>
+                    </article>
+
+                    <article class="service-item">
+                        <div class="service-icon service-icon-status">
+                            <i class="fa-solid fa-server"></i>
+                        </div>
+                        <div class="service-content">
+                            <div class="service-title-row">
+                                <h4>Status</h4>
+                            </div>
+                            <p>服务状态监控</p>
+                            <a href="https://status.zeora.top/" class="service-link" target="_blank" rel="noopener noreferrer">访问</a>
+                        </div>
+                    </article>
+
+                    <article class="service-item">
+                        <div class="service-icon service-icon-bbs">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div class="service-content">
+                            <div class="service-title-row">
+                                <h4>论坛BBS</h4>
+                            </div>
+                            <p>社区交流平台</p>
+                            <a href="https://z-bbs.page.gd/" class="service-link" target="_blank" rel="noopener noreferrer">访问</a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
         <!-- 图片轮播区域 -->
-        <div class="carousel-section py-20">
+        <div id="gallery" class="carousel-section py-20">
             <div class="container mx-auto px-4 mb-8" style="max-width: 1100px;">
                 <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest text-center">
                     Gallery
@@ -280,7 +293,7 @@
         </script>
 
         <!-- 音乐播放器 -->
-        <section class="music-section reveal-up" aria-labelledby="music-title">
+        <section id="music" class="music-section reveal-up" aria-labelledby="music-title">
             <div class="container mx-auto px-4" style="max-width: 900px;">
                 <h3 id="music-title" class="text-xs font-bold text-gray-400 uppercase tracking-widest text-center mb-8">
                     Music
@@ -321,7 +334,7 @@
 
     </div>
 
-    <footer class="bg-white border-t border-gray-100 py-20">
+    <footer id="social" class="bg-white border-t border-gray-100 py-20">
         <div class="container mx-auto px-4" style="max-width: 900px;">
             <div class="reveal-up text-center">
                 <h2 class="text-4xl font-bold mb-2 tracking-tight text-black">Get in touch.</h2>
