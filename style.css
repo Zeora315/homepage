@@ -233,7 +233,7 @@ body.hero-ready .hero-profile-subtitle {
 
 /* 服务入口区域 */
 .services-section {
-    padding: 16px 0 88px;
+    padding: 0 0 64px;
 }
 
 .services-grid {
@@ -353,7 +353,7 @@ body.hero-ready .hero-profile-subtitle {
 
 @media (max-width: 640px) {
     .services-section {
-        padding-bottom: 64px;
+        padding-bottom: 48px;
     }
 
     .services-grid {
@@ -677,8 +677,12 @@ body.hero-ready .hero-profile-subtitle {
 
 .nav-section-menu i {
     width: 18px;
-    color: var(--accent-blue);
+    color: #111;
     text-align: center;
+}
+
+[data-theme="dark"] .nav-section-menu i {
+    color: #111;
 }
 
 /* 语言切换按钮 */
@@ -1158,7 +1162,7 @@ body.hero-ready .hero-profile-subtitle {
 
 /* 音乐播放器 */
 .music-section {
-    padding: 40px 0 92px;
+    padding: 28px 0 84px;
 }
 
 .music-section > .container {
