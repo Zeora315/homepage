@@ -58,6 +58,7 @@ navSectionMenu?.addEventListener('click', (event) => {
 
 document.addEventListener('click', closeNavSectionMenu);
 
+
 // 页面加载完成后隐藏加载动画并显示菜单栏
 window.addEventListener('load', function() {
     setTimeout(function() {

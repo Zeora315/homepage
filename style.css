@@ -27,6 +27,8 @@
     --music-theme: #A4C9CC;
     --music-theme-soft: rgba(164, 201, 204, 0.35);
     --music-theme-strong: rgba(164, 201, 204, 0.92);
+    --hero-gradient-blue: #0057c2;
+    --hero-gradient-warm: #e85f45;
 }
 
 /* 深色模式变量 */
@@ -54,6 +56,8 @@
     --music-theme: #A4C9CC;
     --music-theme-soft: rgba(164, 201, 204, 0.32);
     --music-theme-strong: rgba(164, 201, 204, 0.9);
+    --hero-gradient-blue: #4da3fd;
+    --hero-gradient-warm: #ffe2d2;
 }
 
 body {
@@ -135,6 +139,16 @@ body {
     filter: blur(10px);
 }
 
+.hero-gradient-name {
+    display: inline-block;
+    color: transparent;
+    background: linear-gradient(90deg, var(--hero-gradient-blue), var(--hero-gradient-warm), var(--hero-gradient-blue));
+    background-size: 220% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: heroNameGradient 3.2s ease-in-out infinite;
+}
+
 .hero-profile-subtitle {
     max-width: 700px;
     color: rgba(31, 41, 55, 0.68);
@@ -171,11 +185,31 @@ body.hero-ready .hero-profile-subtitle {
     }
 }
 
+@keyframes heroNameGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
 .hero-scroll-indicator {
     position: absolute;
-    left: 50%;
+    left: 0;
+    right: 0;
     bottom: 48px;
-    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    animation: heroArrowBounce 1s infinite;
+}
+
+@keyframes heroArrowBounce {
+    0%, 100% {
+        transform: translateY(-25%);
+        animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+    50% {
+        transform: translateY(0);
+        animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    }
 }
 
 [data-theme="dark"] .hero-profile-title {
@@ -233,7 +267,8 @@ body.hero-ready .hero-profile-subtitle {
 
 /* 服务入口区域 */
 .services-section {
-    padding: 0 0 64px;
+    padding: 36px 0 92px;
+    scroll-margin-top: 150px;
 }
 
 .services-grid {
@@ -353,7 +388,7 @@ body.hero-ready .hero-profile-subtitle {
 
 @media (max-width: 640px) {
     .services-section {
-        padding-bottom: 48px;
+        padding: 24px 0 68px;
     }
 
     .services-grid {
@@ -619,12 +654,28 @@ body.hero-ready .hero-profile-subtitle {
     background: rgba(255, 255, 255, 0.05);
 }
 
-.nav-menu-toggle i {
+.nav-command-icon {
+    width: 21px;
+    height: 21px;
+    display: block;
     transition: transform 0.25s ease;
 }
 
-.nav-menu-toggle.is-open i {
-    transform: rotate(90deg);
+.nav-command-icon-light {
+    display: none;
+}
+
+[data-theme="dark"] .nav-command-icon-dark {
+    display: none;
+}
+
+[data-theme="dark"] .nav-command-icon-light {
+    display: block;
+}
+
+.nav-menu-toggle i,
+.nav-menu-toggle img {
+    transition: opacity 0.25s ease;
 }
 
 .nav-section-menu {
@@ -682,8 +733,9 @@ body.hero-ready .hero-profile-subtitle {
 }
 
 [data-theme="dark"] .nav-section-menu i {
-    color: #111;
+    color: #fff;
 }
+
 
 /* 语言切换按钮 */
 .language-menu-container {
@@ -1072,7 +1124,8 @@ body.hero-ready .hero-profile-subtitle {
 .carousel-section {
     position: relative;
     width: 100%;
-    padding: 40px 0;
+    padding: 56px 0;
+    scroll-margin-top: 150px;
     background: var(--bg-color);
     overflow: hidden;
 }
@@ -1162,7 +1215,13 @@ body.hero-ready .hero-profile-subtitle {
 
 /* 音乐播放器 */
 .music-section {
-    padding: 28px 0 84px;
+    padding: 56px 0 112px;
+    scroll-margin-top: 150px;
+}
+
+#philosophy,
+#social {
+    scroll-margin-top: 150px;
 }
 
 .music-section > .container {
@@ -1359,55 +1418,6 @@ body.hero-ready .hero-profile-subtitle {
     filter: blur(0);
 }
 
-
-@media (max-width: 768px) {
-    .music-card {
-        width: min(300px, 100%);
-        padding: 18px;
-        border-radius: 32px;
-    }
-
-    .music-meta {
-        margin-top: 16px;
-    }
-
-    .music-meta h4 {
-        font-size: 25px;
-    }
-
-    .music-meta p {
-        font-size: 14px;
-    }
-
-    .music-progress-wrap {
-        grid-template-columns: 40px minmax(0, 1fr) 40px;
-        gap: 8px;
-        margin-top: 14px;
-        font-size: 12px;
-    }
-
-    .music-progress {
-        height: 8px;
-    }
-
-    .music-controls {
-        width: 74%;
-        gap: 4px;
-        margin-top: 16px;
-    }
-
-    .music-btn {
-        width: 38px;
-        height: 38px;
-        font-size: 17px;
-    }
-
-    .music-btn-primary {
-        width: 50px;
-        height: 50px;
-        font-size: 22px;
-    }
-}
 
 /* From Uiverse.io by mrhyddenn */ 
 .shadow__btn {
