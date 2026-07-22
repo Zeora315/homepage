@@ -8,9 +8,7 @@
     <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap-grid.min.css" rel="stylesheet">
     <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.bootcdn.net/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
-
-    <link rel="stylesheet" href="style.css?v=15">
+    <link rel="stylesheet" href="style.css?v=17">
 </head>
 <body class="antialiased">
 
@@ -78,6 +76,18 @@
                     <p id="hero-subtitle" class="hero-profile-subtitle">
                         Loading...
                     </p>
+                    <div class="hero-social-links" aria-label="常用入口">
+                        <a href="https://blog.zeora.top" target="_blank" rel="noopener noreferrer" class="hero-link-item hero-link-primary">
+                            <span>访问博客</span>
+                            <span class="hero-link-arrow" aria-hidden="true">↗</span>
+                        </a>
+                        <a href="https://github.com/zeora315" target="_blank" rel="noopener noreferrer" class="hero-link-item hero-link-icon" aria-label="GitHub">
+                            <i class="fa-brands fa-github"></i>
+                        </a>
+                        <a href="https://space.bilibili.com/3546663318718739" target="_blank" rel="noopener noreferrer" class="hero-link-item hero-link-icon" aria-label="哔哩哔哩">
+                            <i class="fa-brands fa-bilibili"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -218,81 +228,41 @@
 
 
         <!-- 图片轮播区域 -->
-        <div id="gallery" class="carousel-section py-20">
+        <div id="gallery" class="carousel-section py-20 reveal-up">
             <div class="container mx-auto px-4 mb-8" style="max-width: 1100px;">
                 <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest text-center">
                     Gallery
                 </h3>
             </div>
-            <div class="swiper-container">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide">
-                        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=450&fit=crop" alt="风景" />
-                    </div>
-                    <div class="swiper-slide">
-                        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=300&h=450&fit=crop" alt="代码" />
-                    </div>
-                    <div class="swiper-slide">
-                        <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=300&h=450&fit=crop" alt="团队" />
-                    </div>
-                    <div class="swiper-slide">
-                        <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=300&h=450&fit=crop" alt="编程" />
-                    </div>
-                    <div class="swiper-slide">
-                        <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=300&h=450&fit=crop" alt="设计" />
-                    </div>
+            <div class="coverflow-gallery" aria-roledescription="carousel" aria-label="Zeora 相册" tabindex="0">
+                <div class="coverflow-stage">
+                    <figure class="coverflow-card" data-title="风景">
+                        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&h=1200&fit=crop" alt="风景" draggable="false" />
+                    </figure>
+                    <figure class="coverflow-card" data-title="代码">
+                        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=900&h=1200&fit=crop" alt="代码" draggable="false" />
+                    </figure>
+                    <figure class="coverflow-card" data-title="团队">
+                        <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=900&h=1200&fit=crop" alt="团队" draggable="false" />
+                    </figure>
+                    <figure class="coverflow-card" data-title="编程">
+                        <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=900&h=1200&fit=crop" alt="编程" draggable="false" />
+                    </figure>
+                    <figure class="coverflow-card" data-title="设计">
+                        <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=900&h=1200&fit=crop" alt="设计" draggable="false" />
+                    </figure>
                 </div>
             </div>
-            <div class="carousel-controls">
-                <button class="carousel-btn carousel-btn-prev">
+            <div class="carousel-controls" aria-label="相册控制">
+                <button class="carousel-btn carousel-btn-prev" type="button" aria-label="上一张">
                     <i class="fa-solid fa-chevron-left"></i>
                 </button>
-                <button class="carousel-btn carousel-btn-next">
+                <div class="coverflow-dots" role="tablist" aria-label="选择相册图片"></div>
+                <button class="carousel-btn carousel-btn-next" type="button" aria-label="下一张">
                     <i class="fa-solid fa-chevron-right"></i>
                 </button>
             </div>
         </div>
-
-        <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-        <script>
-            var swiper = new Swiper('.carousel-section .swiper-container', {
-                effect: 'coverflow',
-                grabCursor: true,
-                centeredSlides: true,
-                slidesPerView: 'auto',
-                coverflowEffect: {
-                    rotate: 0,
-                    stretch: 0,
-                    depth: 100,
-                    modifier: 2,
-                    slideShadows: true,
-                },
-                loop: false,
-                navigation: {
-                    nextEl: '.carousel-btn-next',
-                    prevEl: '.carousel-btn-prev',
-                },
-                breakpoints: {
-                    320: {
-                        slidesPerView: 'auto',
-                    },
-                    768: {
-                        slidesPerView: 'auto',
-                        coverflowEffect: {
-                            depth: 80,
-                            modifier: 1.5,
-                        }
-                    },
-                    1024: {
-                        slidesPerView: 'auto',
-                        coverflowEffect: {
-                            depth: 80,
-                            modifier: 1.5,
-                        }
-                    }
-                }
-            });
-        </script>
 
         <!-- 音乐播放器 -->
         <section id="music" class="music-section reveal-up" aria-labelledby="music-title">
@@ -405,9 +375,12 @@
                 </div>
             </div>
         </div>
+        <div class="footer-pixel-drift" data-pixel-text="ZEORA" aria-label="ZEORA pixel drift">
+            <canvas class="footer-pixel-canvas"></canvas>
+        </div>
     </footer>
 
-    <script src="script.js?v=7"></script>
+    <script src="script.js?v=8"></script>
 
     <!-- 加载动画 -->
     <div id="loading-animation" class="fixed inset-0 bg-white z-50 flex items-center justify-center transition-opacity duration-500">

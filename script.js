@@ -59,29 +59,44 @@ navSectionMenu?.addEventListener('click', (event) => {
 document.addEventListener('click', closeNavSectionMenu);
 
 
-// 页面加载完成后隐藏加载动画并显示菜单栏
-window.addEventListener('load', function() {
+// 页面骨架就绪后释放加载层，避免外部图片或 CDN 慢时挡住整页。
+let pageReadyShown = false;
+let pageReadyFallbackId = null;
+
+function showPageReady() {
+    if (pageReadyShown) return;
+    pageReadyShown = true;
+    if (pageReadyFallbackId) {
+        window.clearTimeout(pageReadyFallbackId);
+    }
+
     setTimeout(function() {
         const loadingAnimation = document.getElementById('loading-animation');
         const navbar = document.querySelector('.navbar');
-        
+
+        if (navbar) {
+            navbar.classList.add('show');
+        }
+
+        document.body.classList.add('hero-ready');
+
         if (loadingAnimation) {
             loadingAnimation.style.opacity = '0';
             setTimeout(function() {
                 loadingAnimation.style.display = 'none';
-                
-                // 显示菜单栏
-                if (navbar) {
-                    navbar.classList.add('show');
-                }
-
-                document.body.classList.add('hero-ready');
             }, 500);
-        } else {
-            document.body.classList.add('hero-ready');
         }
-    }, 1000); // 1秒后开始淡出
-});
+    }, 1000);
+}
+
+pageReadyFallbackId = window.setTimeout(showPageReady, 1600);
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', showPageReady, { once: true });
+} else {
+    showPageReady();
+}
+window.addEventListener('load', showPageReady, { once: true });
 
 // 滚动到顶部功能
 function scrollToTop() {
@@ -146,6 +161,150 @@ document.querySelectorAll('.reveal-up').forEach(el => observer.observe(el));
 function scrollToId(id) {
     document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
 }
+
+// --- 2.1 Coverflow 相册 ---
+function initCoverflowGallery() {
+    const gallery = document.querySelector('.coverflow-gallery');
+    const stage = gallery?.querySelector('.coverflow-stage');
+    const cards = gallery ? [...gallery.querySelectorAll('.coverflow-card')] : [];
+    const previousButton = gallery?.closest('.carousel-section')?.querySelector('.carousel-btn-prev');
+    const nextButton = gallery?.closest('.carousel-section')?.querySelector('.carousel-btn-next');
+    const dots = gallery?.closest('.carousel-section')?.querySelector('.coverflow-dots');
+
+    if (!gallery || !stage || cards.length < 2 || !dots) return;
+
+    let activeIndex = 0;
+    let pointerStartX = 0;
+    let pointerStartY = 0;
+    let pointerId = null;
+    let dragged = false;
+
+    const wrapIndex = (index) => (index + cards.length) % cards.length;
+
+    function getRelativeIndex(index) {
+        let relative = index - activeIndex;
+        if (relative > cards.length / 2) relative -= cards.length;
+        if (relative < -cards.length / 2) relative += cards.length;
+        return relative;
+    }
+
+    function renderCoverflow() {
+        const stageWidth = stage.getBoundingClientRect().width;
+        const cardWidth = cards[0].getBoundingClientRect().width;
+        const isMobile = window.matchMedia('(max-width: 640px)').matches;
+        const spread = isMobile
+            ? Math.min(cardWidth * 0.62, stageWidth * 0.3)
+            : Math.min(cardWidth * 0.72, 280);
+        const depth = isMobile ? 150 : 240;
+        const yTilt = isMobile ? 10 : 12;
+        const zTilt = isMobile ? 4 : 7;
+
+        cards.forEach((card, index) => {
+            const relative = getRelativeIndex(index);
+            const distance = Math.abs(relative);
+            const visible = distance <= 2;
+            const isActive = relative === 0;
+            const scale = Math.max(0.58, 1 - distance * 0.16);
+
+            card.style.setProperty('--coverflow-x', `${relative * spread}px`);
+            card.style.setProperty('--coverflow-z', `${-distance * depth}px`);
+            card.style.setProperty('--coverflow-y', `${-relative * yTilt}deg`);
+            card.style.setProperty('--coverflow-r', `${relative * zTilt}deg`);
+            card.style.setProperty('--coverflow-scale', scale);
+            card.style.setProperty('--coverflow-opacity', visible ? (isActive ? 1 : 0.56) : 0);
+            card.style.setProperty('--coverflow-saturation', isActive ? 1 : 0.7);
+            card.style.setProperty('--coverflow-blur', isActive ? '0px' : '0.7px');
+            card.style.zIndex = String(10 - distance);
+            card.classList.toggle('is-visible', visible);
+            card.classList.toggle('is-active', isActive);
+            card.setAttribute('aria-hidden', String(!isActive));
+        });
+
+        dots.querySelectorAll('.coverflow-dot').forEach((dot, index) => {
+            dot.classList.toggle('is-active', index === activeIndex);
+            dot.setAttribute('aria-selected', String(index === activeIndex));
+        });
+    }
+
+    function goTo(index) {
+        activeIndex = wrapIndex(index);
+        renderCoverflow();
+    }
+
+    function step(direction) {
+        goTo(activeIndex + direction);
+    }
+
+    cards.forEach((card, index) => {
+        card.addEventListener('click', () => {
+            if (dragged) return;
+            const relative = getRelativeIndex(index);
+            step(relative === 0 ? 1 : relative);
+        });
+    });
+
+    cards.forEach((_, index) => {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'coverflow-dot';
+        dot.setAttribute('role', 'tab');
+        dot.setAttribute('aria-label', `查看第 ${index + 1} 张图片`);
+        dot.addEventListener('click', () => goTo(index));
+        dots.appendChild(dot);
+    });
+
+    previousButton?.addEventListener('click', () => step(-1));
+    nextButton?.addEventListener('click', () => step(1));
+
+    gallery.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowLeft') {
+            event.preventDefault();
+            step(-1);
+        } else if (event.key === 'ArrowRight') {
+            event.preventDefault();
+            step(1);
+        } else if (event.key === 'Home') {
+            event.preventDefault();
+            goTo(0);
+        } else if (event.key === 'End') {
+            event.preventDefault();
+            goTo(cards.length - 1);
+        }
+    });
+
+    gallery.addEventListener('pointerdown', (event) => {
+        pointerId = event.pointerId;
+        pointerStartX = event.clientX;
+        pointerStartY = event.clientY;
+        dragged = false;
+        gallery.setPointerCapture?.(pointerId);
+    });
+
+    gallery.addEventListener('pointermove', (event) => {
+        if (event.pointerId !== pointerId) return;
+        const deltaX = event.clientX - pointerStartX;
+        const deltaY = event.clientY - pointerStartY;
+        dragged = Math.abs(deltaX) > 12 && Math.abs(deltaX) > Math.abs(deltaY);
+    });
+
+    gallery.addEventListener('pointerup', (event) => {
+        if (event.pointerId !== pointerId) return;
+        const deltaX = event.clientX - pointerStartX;
+        if (dragged && Math.abs(deltaX) > 42) step(deltaX < 0 ? 1 : -1);
+        pointerId = null;
+        window.setTimeout(() => { dragged = false; }, 0);
+    });
+
+    gallery.addEventListener('pointercancel', () => {
+        pointerId = null;
+        dragged = false;
+    });
+
+    window.addEventListener('resize', renderCoverflow, { passive: true });
+    renderCoverflow();
+}
+
+initCoverflowGallery();
 
 // --- 3. Modal & Action Sheet Logic ---
 let currentLink = '';
@@ -530,3 +689,238 @@ if (musicAudio) {
     musicAudio.addEventListener('pause', () => updateMusicPlayState(false));
     musicAudio.addEventListener('play', () => updateMusicPlayState(true));
 }
+
+// --- 5. Footer Pixel Drift ---
+function initFooterPixelDrift() {
+    const root = document.querySelector('.footer-pixel-drift');
+    const canvas = root?.querySelector('.footer-pixel-canvas');
+    if (!root || !canvas) return;
+
+    const ctx = canvas.getContext('2d', { alpha: true });
+    if (!ctx) return;
+
+    const text = root.dataset.pixelText || 'ZEORA';
+    const mouseRadius = 35;
+    const mouseForce = 30;
+    const particleSize = 1;
+    const particleCount = 50;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let width = 0;
+    let height = 0;
+    let dpr = 1;
+    let particles = [];
+    let formValue = prefersReducedMotion ? 1 : 0;
+    let visible = prefersReducedMotion;
+    let lastTime = 0;
+    let rafId = null;
+    let pointer = { x: -99999, y: -99999, active: false };
+    let smoothPointer = { x: -99999, y: -99999 };
+    let previousPointer = { x: -99999, y: -99999 };
+    let pointerSpeed = 0;
+
+    function getPixelPalette() {
+        const styles = window.getComputedStyle(root);
+        return [
+            styles.getPropertyValue('--pixel-primary').trim() || '#FFFFFF',
+            styles.getPropertyValue('--pixel-accent').trim() || '#F9731A',
+            styles.getPropertyValue('--pixel-soft').trim() || '#FFFFFF'
+        ];
+    }
+
+    function fitFontSize(measureCtx, label, family, maxWidth, maxHeight, cap) {
+        let low = 8;
+        let high = cap;
+        let best = low;
+
+        for (let i = 0; i < 12; i++) {
+            const mid = (low + high) / 2;
+            measureCtx.font = `800 ${mid}px ${family}`;
+            const metrics = measureCtx.measureText(label);
+            const textHeight = (metrics.actualBoundingBoxAscent || mid * 0.8) + (metrics.actualBoundingBoxDescent || mid * 0.2);
+            if (metrics.width <= maxWidth && textHeight <= maxHeight) {
+                best = mid;
+                low = mid;
+            } else {
+                high = mid;
+            }
+        }
+
+        return best;
+    }
+
+    function sampleText() {
+        if (!width || !height) return;
+
+        const offscreen = document.createElement('canvas');
+        offscreen.width = Math.max(1, Math.floor(width * dpr));
+        offscreen.height = Math.max(1, Math.floor(height * dpr));
+        const offCtx = offscreen.getContext('2d', { willReadFrequently: true });
+        if (!offCtx) return;
+
+        offCtx.scale(dpr, dpr);
+        const fontFamily = 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif';
+        const maxWidth = width * 0.92;
+        const maxHeight = height * 0.9;
+        const fontSize = fitFontSize(offCtx, text, fontFamily, maxWidth, maxHeight, Math.min(132, height * 0.9));
+
+        offCtx.clearRect(0, 0, width, height);
+        offCtx.fillStyle = '#ffffff';
+        offCtx.font = `800 ${fontSize}px ${fontFamily}`;
+        offCtx.textAlign = 'center';
+        offCtx.textBaseline = 'middle';
+        offCtx.fillText(text, width / 2, height / 2);
+
+        const image = offCtx.getImageData(0, 0, offscreen.width, offscreen.height);
+        const stride = Math.max(2, Math.round(150 / particleCount));
+        const nextParticles = [];
+
+        for (let y = 0; y < height; y += stride) {
+            for (let x = 0; x < width; x += stride) {
+                const ix = Math.floor(x * dpr);
+                const iy = Math.floor(y * dpr);
+                const alphaIndex = (iy * image.width + ix) * 4 + 3;
+                if (image.data[alphaIndex] > 128) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const radius = Math.max(width, height) * (0.62 + Math.random() * 0.46);
+                    nextParticles.push({
+                        ox: x,
+                        oy: y,
+                        sx: width / 2 + Math.cos(angle) * radius,
+                        sy: height / 2 + Math.sin(angle) * radius,
+                        x,
+                        y,
+                        repX: 0,
+                        repY: 0,
+                        colorIndex: Math.floor(Math.random() * 3)
+                    });
+                }
+            }
+        }
+
+        particles = nextParticles;
+        formValue = prefersReducedMotion ? 1 : 0;
+        visible = prefersReducedMotion || visible;
+        lastTime = 0;
+    }
+
+    function resizeCanvas() {
+        const rect = root.getBoundingClientRect();
+        width = Math.floor(rect.width);
+        height = Math.floor(rect.height);
+        if (width <= 0 || height <= 0) return;
+
+        dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+        canvas.width = Math.floor(width * dpr);
+        canvas.height = Math.floor(height * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        sampleText();
+    }
+
+    function draw(timestamp) {
+        ctx.clearRect(0, 0, width, height);
+        if (!visible && formValue <= 0) {
+            rafId = window.requestAnimationFrame(draw);
+            return;
+        }
+
+        const last = lastTime || timestamp;
+        const delta = Math.min(64, Math.max(0, timestamp - last));
+        lastTime = timestamp;
+        formValue = prefersReducedMotion ? 1 : Math.min(1, formValue + delta / 420);
+        const factor = formValue;
+        const active = pointer.active && formValue >= 1;
+        const speed = pointerSpeed;
+        pointerSpeed *= 0.88;
+
+        if (active) {
+            const lerp = Math.max(0.08, 0.3 - speed * 0.006);
+            if (smoothPointer.x < -9000) {
+                smoothPointer.x = pointer.x;
+                smoothPointer.y = pointer.y;
+            } else {
+                smoothPointer.x += (pointer.x - smoothPointer.x) * lerp;
+                smoothPointer.y += (pointer.y - smoothPointer.y) * lerp;
+            }
+        } else {
+            smoothPointer.x = -99999;
+            smoothPointer.y = -99999;
+        }
+
+        const palette = getPixelPalette();
+        ctx.globalAlpha = factor;
+        for (const particle of particles) {
+            if (formValue < 1) {
+                particle.x = particle.sx + (particle.ox - particle.sx) * factor;
+                particle.y = particle.sy + (particle.oy - particle.sy) * factor;
+            } else {
+                let inZone = false;
+                if (active) {
+                    const dx = particle.ox - smoothPointer.x;
+                    const dy = particle.oy - smoothPointer.y;
+                    const distSq = dx * dx + dy * dy;
+                    if (distSq > 0 && distSq < mouseRadius * mouseRadius) {
+                        const dist = Math.sqrt(distSq);
+                        const nx = dx / dist;
+                        const ny = dy / dist;
+                        const falloff = 1 - dist / mouseRadius;
+                        const push = falloff * speed * mouseForce * 0.05;
+                        particle.repX += nx * push;
+                        particle.repY += ny * push;
+                        particle.repX += (nx * (mouseRadius - dist) - particle.repX) * 0.06;
+                        particle.repY += (ny * (mouseRadius - dist) - particle.repY) * 0.06;
+                        inZone = true;
+                    }
+                }
+                if (!inZone) {
+                    particle.repX *= 0.97;
+                    particle.repY *= 0.97;
+                }
+                particle.x = particle.ox + particle.repX;
+                particle.y = particle.oy + particle.repY;
+            }
+
+            ctx.fillStyle = palette[particle.colorIndex] || palette[0];
+            ctx.fillRect(particle.x, particle.y, particleSize, particleSize);
+        }
+        ctx.globalAlpha = 1;
+
+        rafId = window.requestAnimationFrame(draw);
+    }
+
+    function updatePointer(event) {
+        const rect = canvas.getBoundingClientRect();
+        const nextX = (event.clientX - rect.left) * (width / rect.width);
+        const nextY = (event.clientY - rect.top) * (height / rect.height);
+        if (previousPointer.x > -9000) {
+            const dx = nextX - previousPointer.x;
+            const dy = nextY - previousPointer.y;
+            pointerSpeed = Math.sqrt(dx * dx + dy * dy);
+        }
+        previousPointer = { x: nextX, y: nextY };
+        pointer = { x: nextX, y: nextY, active: true };
+    }
+
+    function clearPointer() {
+        pointer = { x: -99999, y: -99999, active: false };
+        previousPointer = { x: -99999, y: -99999 };
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        if (entries.some(entry => entry.isIntersecting)) {
+            visible = true;
+        }
+    }, { threshold: 0.2 });
+
+    const resizeObserver = new ResizeObserver(resizeCanvas);
+    resizeObserver.observe(root);
+    observer.observe(root);
+    canvas.addEventListener('pointermove', updatePointer);
+    canvas.addEventListener('pointerleave', clearPointer);
+    canvas.addEventListener('pointercancel', clearPointer);
+
+    resizeCanvas();
+    rafId = window.requestAnimationFrame(draw);
+}
+
+initFooterPixelDrift();
