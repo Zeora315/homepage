@@ -8,7 +8,7 @@
     <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap-grid.min.css" rel="stylesheet">
     <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.bootcdn.net/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=17">
+    <link rel="stylesheet" href="style.css?v=23">
 </head>
 <body class="antialiased">
 
@@ -68,7 +68,7 @@
     <section class="hero-profile-section h-screen w-full flex flex-col justify-center relative">
         <div class="hero-profile-container z-10 reveal-up">
             <div class="hero-profile-content">
-                <img class="hero-avatar" src="https://img.315996.xyz/blog-logo/1770705763501.webp" alt="Zeora 头像">
+                <img class="hero-avatar" src="http://p.zeora.top/logo" alt="Zeora 头像">
                 <div class="hero-profile-copy">
                     <h1 id="hero-text" class="hero-profile-title" data-static="true">
                         Hi there，I‘am <span class="hero-gradient-name">Zeora</span>
@@ -304,86 +304,100 @@
             </div>
         </section>
 
-
     </div>
 
-    <footer id="social" class="bg-white border-t border-gray-100 py-24">
-        <div class="container mx-auto px-4" style="max-width: 900px;">
-            <div class="reveal-up text-center">
-                <h2 class="text-4xl font-bold mb-2 tracking-tight text-black">Get in touch.</h2>
-                <p class="text-gray-500 mb-12">点击下方图标选择操作</p>
+    <footer id="social" class="footer-root">
+        <section class="social-section reveal-up">
+            <div class="container mx-auto px-4" style="max-width: 900px;">
+                <div class="text-center mb-10">
+                    <h2 class="text-4xl font-bold mb-2 tracking-tight text-black">Get in touch.</h2>
+                    <p class="text-gray-500">点击下方图标选择操作</p>
+                </div>
 
                 <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    
-                    <button onclick="openModal('youtube', '@zeora315', 'https://youtube.com/@zeora315', 'fa-brands fa-youtube', '#FF0000')" 
+                    <button onclick="openModal('wechat', '武林wai传', 'wechat.html', 'fa-brands fa-weixin', '#22c55e')"
+                        class="group p-6 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-all flex flex-col items-center justify-center border border-transparent hover:border-gray-200">
+                        <i class="fa-brands fa-weixin text-3xl text-gray-400 group-hover:text-[#22c55e] mb-3 transition-colors"></i>
+                        <span class="font-bold text-gray-700">微信公众号</span>
+                        <span class="text-xs text-gray-400 mt-1">武林wai传</span>
+                    </button>
+
+                    <button onclick="openModal('youtube', '@zeora315', 'https://youtube.com/@zeora315', 'fa-brands fa-youtube', '#FF0000')"
                         class="group p-6 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-all flex flex-col items-center justify-center border border-transparent hover:border-gray-200">
                         <i class="fa-brands fa-youtube text-3xl text-gray-400 group-hover:text-[#FF0000] mb-3 transition-colors"></i>
                         <span class="font-bold text-gray-700">YouTube</span>
                         <span class="text-xs text-gray-400 mt-1">@zeora315</span>
                     </button>
 
-                    <button onclick="openModal('twitter', '@zeora315', 'https://twitter.com/zeora315', 'fa-brands fa-x-twitter', '#000000')" 
+                    <button onclick="openModal('twitter', '@zeora315', 'https://twitter.com/zeora315', 'fa-brands fa-x-twitter', '#000000')"
                         class="group p-6 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-all flex flex-col items-center justify-center border border-transparent hover:border-gray-200">
                         <i class="fa-brands fa-x-twitter text-3xl text-gray-400 group-hover:text-black mb-3 transition-colors"></i>
                         <span class="font-bold text-gray-700">X / Twitter</span>
                         <span class="text-xs text-gray-400 mt-1">@zeora315</span>
                     </button>
 
-                    <button onclick="openModal('qq', '2141672185', null, 'fa-brands fa-qq', '#12B7F5')" 
+                    <button onclick="openModal('qq', '2141672185', null, 'fa-brands fa-qq', '#12B7F5')"
                         class="group p-6 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-all flex flex-col items-center justify-center border border-transparent hover:border-gray-200">
                         <i class="fa-brands fa-qq text-3xl text-gray-400 group-hover:text-[#12B7F5] mb-3 transition-colors"></i>
                         <span class="font-bold text-gray-700">QQ</span>
                         <span class="text-xs text-gray-400 mt-1">2141672185</span>
                     </button>
 
-                    <button onclick="openModal('email', 'mail@315996.xyz', 'mailto:mail@315996.xyz', 'fa-solid fa-envelope', '#555')" 
+                    <button onclick="openModal('email', 'mail@315996.xyz', 'mailto:mail@315996.xyz', 'fa-solid fa-envelope', '#555')"
                         class="group p-6 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-all flex flex-col items-center justify-center border border-transparent hover:border-gray-200">
                         <i class="fa-solid fa-envelope text-3xl text-gray-400 group-hover:text-gray-600 mb-3 transition-colors"></i>
                         <span class="font-bold text-gray-700">Email</span>
                         <span class="text-xs text-gray-400 mt-1 text-nowrap overflow-hidden w-full text-ellipsis">mail@315996.xyz</span>
                     </button>
 
-                    <button onclick="openModal('github', 'zeora315', 'https://github.com/zeora315', 'fa-brands fa-github', '#181717')" 
+                    <button onclick="openModal('github', 'zeora315', 'https://github.com/zeora315', 'fa-brands fa-github', '#181717')"
                         class="group p-6 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-all flex flex-col items-center justify-center border border-transparent hover:border-gray-200">
                         <i class="fa-brands fa-github text-3xl text-gray-400 group-hover:text-[#181717] mb-3 transition-colors"></i>
                         <span class="font-bold text-gray-700">GitHub</span>
                         <span class="text-xs text-gray-400 mt-1">zeora315</span>
                     </button>
 
-                    <button onclick="openModal('bilibili', '3546663318718739', 'https://space.bilibili.com/3546663318718739', 'fa-brands fa-bilibili', '#fb7299')" 
+                    <button onclick="openModal('bilibili', '3546663318718739', 'https://space.bilibili.com/3546663318718739', 'fa-brands fa-bilibili', '#fb7299')"
                         class="group p-6 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-all flex flex-col items-center justify-center border border-transparent hover:border-gray-200">
                         <i class="fa-brands fa-bilibili text-3xl text-gray-400 group-hover:text-[#fb7299] mb-3 transition-colors"></i>
                         <span class="font-bold text-gray-700">Bilibili</span>
                         <span class="text-xs text-gray-400 mt-1">3546663318718739</span>
                     </button>
-                    
+
+                    <button onclick="openModal('douyin', '@zeora315', 'https://v.douyin.com/3HxV4i3e-08/', 'fa-brands fa-tiktok', '#000000')"
+                        class="group p-6 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-all flex flex-col items-center justify-center border border-transparent hover:border-gray-200">
+                        <i class="fa-brands fa-tiktok text-3xl text-gray-400 group-hover:text-black mb-3 transition-colors"></i>
+                        <span class="font-bold text-gray-700">抖音</span>
+                        <span class="text-xs text-gray-400 mt-1">@zeora315</span>
+                    </button>
                 </div>
-                
-                <div class="mt-20 pt-8 border-t border-gray-200">
-                    <div class="flex flex-col items-center justify-center space-y-3">
-                        <p class="text-sm text-gray-600 font-medium">&copy; 2026 Zeora</p>
-                        <div class="flex flex-wrap items-center justify-center gap-4 text-xs text-gray-400">
-                            <a href="https://icp.gov.moe/?keyword=20253156" target="_blank" rel="noopener noreferrer" class="hover:text-gray-600 transition-colors">
-                                萌 ICP 备 20253156 号
-                            </a>
-                            <span class="text-gray-300">|</span>
-                            <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" class="hover:text-gray-600 transition-colors">
-                                苏 ICP 备 2026019501 号
-                            </a>
-                        </div>
+            </div>
+        </section>
+
+        <div class="footer-capsule reveal-up">
+            <div class="footer-capsule-inner">
+                <div class="footer-bottom">
+                    <div class="footer-pixel-drift" data-pixel-text="ZEORA" aria-label="ZEORA pixel drift">
+                        <canvas class="footer-pixel-canvas"></canvas>
+                    </div>
+                    <div class="footer-icp">
+                        <a href="https://icp.gov.moe/?keyword=20253156" target="_blank" rel="noopener noreferrer" class="hover:text-gray-600 transition-colors">
+                            萌 ICP 备 20253156 号
+                        </a>
+                        <span class="footer-icp-divider">|</span>
+                        <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" class="hover:text-gray-600 transition-colors">
+                            苏 ICP 备 2026019501 号
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="footer-pixel-drift" data-pixel-text="ZEORA" aria-label="ZEORA pixel drift">
-            <canvas class="footer-pixel-canvas"></canvas>
-        </div>
     </footer>
 
-    <script src="script.js?v=8"></script>
+    <script src="script.js?v=12"></script>
 
     <!-- 加载动画 -->
-    <div id="loading-animation" class="fixed inset-0 bg-white z-50 flex items-center justify-center transition-opacity duration-500">
+    <div id="loading-animation" class="fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-500" style="background: var(--bg-color);">
         <div class="loader">
             <svg width="100" height="100" viewBox="0 0 100 100">
                 <defs>
