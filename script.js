@@ -86,10 +86,10 @@ function showPageReady() {
                 loadingAnimation.style.display = 'none';
             }, 500);
         }
-    }, 1000);
+    }, 400);
 }
 
-pageReadyFallbackId = window.setTimeout(showPageReady, 1600);
+pageReadyFallbackId = window.setTimeout(showPageReady, 700);
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', showPageReady, { once: true });
@@ -325,12 +325,18 @@ function openModal(type, value, link, iconClass, color) {
 
     // Handle Buttons state
     const btnGo = document.getElementById('btn-go');
+    const btnCopy = document.getElementById('btn-copy');
     if (!link) {
         btnGo.style.display = 'none';
     } else {
         btnGo.style.display = 'block';
     }
-    
+    if (type === 'wechat') {
+        btnCopy.style.display = 'none';
+    } else {
+        btnCopy.style.display = 'block';
+    }
+
     modal.classList.add('open');
 }
 
@@ -769,7 +775,7 @@ function initFooterPixelDrift() {
         offCtx.font = `800 ${fontSize}px ${fontFamily}`;
         offCtx.textAlign = 'center';
         offCtx.textBaseline = 'middle';
-        offCtx.fillText(text, width / 2, height / 2);
+        offCtx.fillText(text, width / 2, height / 2 + height * 0.035);
 
         const image = offCtx.getImageData(0, 0, offscreen.width, offscreen.height);
         const stride = Math.max(2, Math.round(150 / particleCount));
