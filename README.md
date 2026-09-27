@@ -16,6 +16,9 @@
 ```
 homepage/
 ├── index.html          # 主页面
+├── websites.html       # 网站入口页
+├── gallery.html        # 相册页
+├── music.html          # 音乐播放器页
 ├── style.css           # 样式文件
 ├── script.js           # 脚本文件
 ├── img/                # 图片资源
@@ -43,6 +46,8 @@ http://localhost:8000
 - 社交账号链接
 - 个人简介
 
+网站入口、相册和音乐播放器已经拆分为独立页面，分别编辑 `websites.html`、`gallery.html` 和 `music.html`。
+
 ### 修改主题颜色
 编辑 `style.css` 中的 CSS 变量：
 ```css
@@ -65,4 +70,3 @@ http://localhost:8000
 ## 许可证
 
 MIT License
-

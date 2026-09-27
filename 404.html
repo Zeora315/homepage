@@ -3,12 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 配置：404 页面浏览器标题；改这里会影响访问不存在页面时的标签页标题 -->
     <title>404 - Page Not Found | Zeora</title>
     
+    <!-- 配置：404 页面外部 CSS 库；和首页保持一致，负责网格、图标和工具类 -->
     <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap-grid.min.css" rel="stylesheet">
     <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.bootcdn.net/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
 
+    <!-- 配置：404 页面主样式文件和缓存版本号；改 v=23 可强制刷新 style.css -->
     <link rel="stylesheet" href="style.css?v=23">
 </head>
 <body class="antialiased">
@@ -81,13 +84,14 @@
 
         /* 加载动画 - Uiverse by andrew-manzyk (橙色调) */
         .loader {
+            /* 配置：404 加载动画色值；这几项控制橙色加载球的主色、阴影和柔光 */
             --color-one: #ffbf48;
             --color-two: #be4a1d;
             --color-three: #ffbf4780;
             --color-four: #bf4a1d80;
             --color-five: #ffbf4740;
-            --time-animation: 1.2s;
-            --size: 1;
+            --time-animation: 1.2s; /* 配置：404 加载动画速度；数值越小旋转越快 */
+            --size: 1; /* 配置：404 加载动画缩放；1 为原始大小 */
             position: relative;
             border-radius: 50%;
             transform: scale(var(--size));
@@ -235,11 +239,13 @@
     </div>
 
     <nav class="error-page-nav">
+        <!-- 配置：404 顶部返回按钮；href="/" 表示返回站点根路径 -->
         <a href="/" class="error-page-back">
             <i class="fa-solid fa-arrow-left"></i>
             <span>返回主页</span>
         </a>
         <button class="error-page-theme" id="theme-toggle" aria-label="切换主题">
+            <!-- 配置：404 主题切换图标；和首页/微信页共用同一个 SVG -->
             <img src="img/theme-toggle-icon.svg" alt="切换主题">
         </button>
     </nav>
@@ -247,19 +253,24 @@
     <section class="h-screen w-full flex flex-col justify-center items-center relative">
         <div class="text-center z-10 px-4">
             <h1 class="text-9xl md:text-[12rem] font-bold tracking-tighter text-black mb-6 select-none mix-blend-darken opacity-20">
+                <!-- 配置：404 大号背景数字；通常保持 404，也可以改成自定义错误码 -->
                 404
             </h1>
+            <!-- 配置：404 主提示标题；用户访问不存在页面时看到的第一行说明 -->
             <h2 id="error-title" class="text-3xl md:text-4xl font-bold text-black mb-4">
                 页面未找到
             </h2>
+            <!-- 配置：404 详细说明；显示在主标题下方 -->
             <p id="error-desc" class="text-gray-500 text-lg md:text-xl leading-relaxed mb-8 max-w-md mx-auto">
                 抱歉，您访问的页面不存在或已被移除。
             </p>
             <div class="flex flex-col md:flex-row gap-4 justify-center items-center">
+                <!-- 配置：404 返回首页按钮；href 控制跳转目标，btn-home 控制按钮文字 -->
                 <a href="index.html" class="group px-8 py-3 bg-black text-white rounded-full font-medium transition-all hover:bg-gray-800 flex items-center gap-2">
                     <i class="fa-solid fa-house"></i>
                     <span id="btn-home">返回首页</span>
                 </a>
+                <!-- 配置：404 返回上一页按钮；onclick=history.back() 会回到浏览器历史上一页 -->
                 <button onclick="history.back()" class="group px-8 py-3 bg-gray-100 text-gray-700 rounded-full font-medium transition-all hover:bg-gray-200 flex items-center gap-2">
                     <i class="fa-solid fa-arrow-left"></i>
                     <span id="btn-back">返回上一页</span>
@@ -275,16 +286,16 @@
             const skipBtn = document.getElementById('loading-skip');
             if (!loading) return;
             const isHidden = () => loading.classList.contains('is-hidden') || loading.style.display === 'none';
-            const showSkip = setTimeout(() => { if (!isHidden()) skipBtn?.classList.add('is-visible'); }, 3000);
+            const showSkip = setTimeout(() => { if (!isHidden()) skipBtn?.classList.add('is-visible'); }, 3000); // 配置：3 秒后显示“跳过动画”
             const hide = () => {
                 if (isHidden()) return;
                 clearTimeout(showSkip);
                 skipBtn?.classList.remove('is-visible');
                 loading.classList.add('is-hidden');
-                setTimeout(() => { loading.style.display = 'none'; }, 500);
+                setTimeout(() => { loading.style.display = 'none'; }, 500); // 配置：加载层淡出后彻底隐藏的延迟
             };
             skipBtn?.addEventListener('click', hide);
-            const auto = setTimeout(hide, 1200);
+            const auto = setTimeout(hide, 1200); // 配置：404 加载动画自动收起时间；1200ms 后自动关闭
             const onLoad = () => { clearTimeout(auto); setTimeout(hide, 200); };
             if (document.readyState === 'complete') onLoad();
             else window.addEventListener('load', onLoad);
@@ -293,7 +304,7 @@
         // --- Theme Toggle ---
         const themeToggle = document.getElementById('theme-toggle');
         const htmlElement = document.documentElement;
-        const savedTheme = localStorage.getItem('theme') || 'light';
+        const savedTheme = localStorage.getItem('theme') || 'light'; // 配置：404 默认主题；没有本地记录时使用 light
         if (savedTheme === 'dark') {
             htmlElement.setAttribute('data-theme', 'dark');
         }

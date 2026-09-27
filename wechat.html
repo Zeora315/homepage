@@ -4,10 +4,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 配置：微信页浏览器标题；改这里会影响 wechat.html 的标签页标题 -->
     <title>关注「Zeora」微信公众号</title>
+    <!-- 配置：微信页样式文件和缓存版本号；改 v=24/v=3 可强制浏览器重新加载 CSS -->
     <link rel="stylesheet" href="style.css?v=24">
     <link rel="stylesheet" href="wechat-original.css?v=3">
+    <!-- 配置：微信页 SEO 描述；搜索引擎或分享预览可能会读取这里 -->
     <meta name="description" content="关注 Zeora 微信公众号，获取更多内容。">
+    <!-- 配置：移动浏览器地址栏主题色；和微信页浅色背景保持一致 -->
     <meta name="theme-color" content="#f6f7f8">
 </head>
 <body>
@@ -29,16 +33,19 @@
             </svg>
             <div class="wechat-loader-box"></div>
         </div>
+        <!-- 配置：微信页加载动画跳过按钮文字 -->
         <button id="wechat-loading-skip" type="button" class="wechat-loading-skip">跳过动画 ›</button>
     </div>
 
     <!-- 顶部导航 -->
     <nav class="wechat-top-nav">
+        <!-- 配置：微信页返回按钮；href="/" 表示回到网站根路径首页 -->
         <a href="/" class="wechat-top-back">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
             <span>返回主页</span>
         </a>
         <button class="wechat-top-theme" id="wechat-theme-toggle" aria-label="切换主题">
+            <!-- 配置：微信页主题切换图标；和首页共用同一个 SVG -->
             <img src="img/theme-toggle-icon.svg" alt="切换主题">
         </button>
     </nav>
@@ -46,23 +53,29 @@
     <div class="wechatOA">
         <div class="wechat">
             <div class="wechat-need-reply" id="wechat-need-reply" style="display: none;">
+                <!-- 配置：有 replyText 参数时显示的引导文案，例如 wechat.html?replyText=关键词 -->
                 <span class="wechat-need-reply-front">关注公众号并回复</span>
                 <div class="wechat-need-reply-copybtn" id="wechat-need-reply-copybtn">
+                    <!-- 配置：回复关键词默认值；URL 里带 replyText 时会被 wechat-original.js 覆盖 -->
                     <span class="wechat-need-reply-text" id="wechat-need-reply-text">隔空投送</span>
                     <svg class="wechat-need-reply-copybtn-img" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                     </svg>
                 </div>
+                <!-- 配置：回复关键词后半句提示；复制后会临时变成“复制成功/失败” -->
                 <span class="wechat-need-reply-back" id="wechat-need-reply-back">即可获取资源</span>
             </div>
 
             <div class="wechat-card">
+                <!-- 配置：公众号二维码图片；改 src 会影响微信页主二维码 -->
                 <img src="http://p.zeora.top/公众号.webp" class="qrcode" alt="qrcode" id="wechat-qrcode">
+                <!-- 配置：二维码下方提示文案 -->
                 <div class="tips">扫描二维码关注公众号</div>
                 <div class="wechatOA-card">
                     <div class="wechatOA-head" id="wechat-oa-head"></div>
                     <div class="wechatOA-info">
+                        <!-- 配置：公众号名称和简介；显示在二维码下方的信息卡片里 -->
                         <div class="wechatOA-name" id="wechatOA-name">武林wai传</div>
                         <div class="wechatOA-description" id="wechatOA-description">分享科技与日常</div>
                     </div>
@@ -70,10 +83,12 @@
             </div>
         </div>
         <div class="footer">
+            <!-- 配置：微信页底部链接；“如何扫码”链接到腾讯帮助，“主题”链接到原主题项目 -->
             <a class="footer-item" href="https://kf.qq.com/touch/wxappfaq/1208117b2mai141113jaqAnU.html?platform=14" title="帮助" target="_blank" rel="noopener noreferrer">如何扫码</a>
             <a class="footer-item" href="https://github.com/zhheo/Wechat-Official-Account-Web" title="Powered by 张洪Heo" target="_blank" rel="noopener noreferrer">主题</a>
         </div>
     </div>
+    <!-- 配置：微信页脚本和缓存版本号；改 v=3 可强制浏览器重新加载 wechat-original.js -->
     <script src="wechat-original.js?v=3"></script>
 </body>
 </html>

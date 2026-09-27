@@ -2,7 +2,7 @@
 const themeToggle = document.getElementById('theme-toggle');
 const htmlElement = document.documentElement;
 
-// 从localStorage读取主题设置
+// 配置：默认主题；localStorage 里没有 theme 时使用 light，改成 dark 可让首次访问默认深色
 const savedTheme = localStorage.getItem('theme') || 'light';
 if (savedTheme === 'dark') {
     htmlElement.setAttribute('data-theme', 'dark');
@@ -18,29 +18,59 @@ function toggleTheme() {
 }
 
 // 绑定点击事件
-themeToggle.addEventListener('click', toggleTheme);
+themeToggle?.addEventListener('click', toggleTheme);
 
 // --- 0.1 顶部菜单跳转 ---
 const navMenuToggle = document.getElementById('nav-menu-toggle');
 const navSectionMenu = document.getElementById('nav-section-menu');
+const navSheetLayer = document.getElementById('nav-sheet-layer');
+const sitePage = document.getElementById('site-page');
+const navbar = document.querySelector('.navbar');
+const navSheetOptions = navSectionMenu?.querySelector('.nav-sheet-options');
+const navSheetHandle = navSectionMenu?.querySelector('.nav-sheet-handle');
+let navFocusBeforeOpen = null;
+let navSwipeStart = null;
+let navSwipeDistance = 0;
+let navHandlePointerId = null;
 
-function closeNavSectionMenu() {
+function closeNavSectionMenu(restoreFocus = true) {
+    if (!navSheetLayer?.classList.contains('open')) return;
+    navSwipeStart = null;
+    navSwipeDistance = 0;
+    navSectionMenu?.classList.remove('dragging');
+    navSectionMenu?.style.removeProperty('--nav-sheet-drag');
+    navSheetLayer.classList.remove('open');
+    navSheetLayer.setAttribute('aria-hidden', 'true');
+    navSheetLayer.setAttribute('inert', '');
+    document.body.classList.remove('nav-sheet-open');
+    navbar?.removeAttribute('inert');
+    sitePage?.removeAttribute('inert');
     navMenuToggle?.classList.remove('is-open');
     navMenuToggle?.setAttribute('aria-expanded', 'false');
-    navSectionMenu?.classList.remove('open');
-    navSectionMenu?.setAttribute('aria-hidden', 'true');
+    navMenuToggle?.setAttribute('aria-label', '打开菜单');
+    if (restoreFocus && navFocusBeforeOpen?.isConnected) navFocusBeforeOpen.focus();
 }
 
 function openNavSectionMenu() {
+    if (!navSheetLayer || !navSectionMenu) return;
+    navFocusBeforeOpen = document.activeElement;
+    sitePage?.style.setProperty('--nav-sheet-center', `${window.scrollY + window.innerHeight / 2}px`);
+    navSectionMenu.style.removeProperty('--nav-sheet-drag');
+    navSheetLayer.removeAttribute('inert');
+    navSheetLayer.setAttribute('aria-hidden', 'false');
+    navSheetLayer.classList.add('open');
+    document.body.classList.add('nav-sheet-open');
     navMenuToggle?.classList.add('is-open');
     navMenuToggle?.setAttribute('aria-expanded', 'true');
-    navSectionMenu?.classList.add('open');
-    navSectionMenu?.setAttribute('aria-hidden', 'false');
+    navMenuToggle?.setAttribute('aria-label', '关闭菜单');
+    navbar?.setAttribute('inert', '');
+    sitePage?.setAttribute('inert', '');
+    navSectionMenu.focus();
 }
 
 navMenuToggle?.addEventListener('click', (event) => {
     event.stopPropagation();
-    if (navSectionMenu?.classList.contains('open')) {
+    if (navSheetLayer?.classList.contains('open')) {
         closeNavSectionMenu();
     } else {
         openNavSectionMenu();
@@ -48,17 +78,123 @@ navMenuToggle?.addEventListener('click', (event) => {
 });
 
 navSectionMenu?.addEventListener('click', (event) => {
-    event.stopPropagation();
-    const button = event.target.closest('button[data-target]');
-    if (!button) return;
+    const control = event.target.closest('button[data-target], a[data-target]');
+    if (!control) return;
 
-    scrollToId(button.dataset.target);
-    closeNavSectionMenu();
+    const href = control.getAttribute('href');
+    const targetId = control.dataset.target;
+    const target = targetId ? document.getElementById(targetId) : null;
+
+    // 当前页面有目标区块时只做平滑滚动；只有目标不在当前页面时才进行页面跳转。
+    if (target) {
+        event.preventDefault();
+        closeNavSectionMenu();
+        scrollToId(targetId);
+        return;
+    }
+
+    if (control.tagName === 'A' && href) {
+        closeNavSectionMenu(false);
+    }
 });
 
-document.addEventListener('click', closeNavSectionMenu);
+navSheetLayer?.querySelector('.nav-sheet-backdrop')?.addEventListener('click', () => closeNavSectionMenu());
+navSectionMenu?.querySelector('.nav-sheet-cancel')?.addEventListener('click', () => closeNavSectionMenu());
+
+document.addEventListener('keydown', (event) => {
+    if (!navSheetLayer?.classList.contains('open')) return;
+    if (event.key === 'Escape') {
+        event.preventDefault();
+        closeNavSectionMenu();
+    } else if (event.key === 'Tab') {
+        const controls = [...navSectionMenu.querySelectorAll('a, button')];
+        const first = controls[0];
+        const last = controls[controls.length - 1];
+        if (event.shiftKey && (document.activeElement === first || document.activeElement === navSectionMenu)) {
+            event.preventDefault();
+            last.focus();
+        } else if (!event.shiftKey && (document.activeElement === last || document.activeElement === navSectionMenu)) {
+            event.preventDefault();
+            first.focus();
+        }
+    }
+});
+
+function startNavSwipe(x, y, inOptions = false) {
+    navSwipeStart = {
+        x,
+        y,
+        time: performance.now(),
+        inOptions
+    };
+    navSwipeDistance = 0;
+}
+
+function moveNavSwipe(x, y) {
+    if (!navSwipeStart || !navSheetLayer?.classList.contains('open')) return false;
+    const distance = Math.max(0, y - navSwipeStart.y);
+    const horizontalDistance = x - navSwipeStart.x;
+    if (Math.abs(horizontalDistance) > distance || (navSwipeStart.inOptions && navSheetOptions?.scrollTop > 0)) return false;
+    navSwipeDistance = distance;
+    navSectionMenu.classList.add('dragging');
+    navSectionMenu.style.setProperty('--nav-sheet-drag', `${distance}px`);
+    return true;
+}
+
+function finishNavSwipe(cancelled = false) {
+    if (!navSwipeStart) return;
+    const elapsed = Math.max(1, performance.now() - navSwipeStart.time);
+    const shouldClose = !cancelled && (navSwipeDistance > 90 || (navSwipeDistance > 35 && navSwipeDistance / elapsed > 0.5));
+    navSwipeStart = null;
+    navSectionMenu?.classList.remove('dragging');
+    navSectionMenu?.style.removeProperty('--nav-sheet-drag');
+    if (shouldClose) closeNavSectionMenu();
+}
+
+// Pointer capture keeps the handle attached to the mouse or finger outside its bounds.
+navSheetHandle?.addEventListener('pointerdown', (event) => {
+    if (!event.isPrimary || event.button !== 0 || !navSheetLayer?.classList.contains('open')) return;
+    event.preventDefault();
+    navHandlePointerId = event.pointerId;
+    startNavSwipe(event.clientX, event.clientY);
+    navSheetHandle.setPointerCapture(event.pointerId);
+});
+
+navSheetHandle?.addEventListener('pointermove', (event) => {
+    if (event.pointerId !== navHandlePointerId) return;
+    if (moveNavSwipe(event.clientX, event.clientY)) event.preventDefault();
+});
+
+function finishNavHandleDrag(event) {
+    if (event.pointerId !== navHandlePointerId) return;
+    navHandlePointerId = null;
+    if (navSheetHandle.hasPointerCapture(event.pointerId)) navSheetHandle.releasePointerCapture(event.pointerId);
+    finishNavSwipe(event.type !== 'pointerup');
+}
+
+navSheetHandle?.addEventListener('pointerup', finishNavHandleDrag);
+navSheetHandle?.addEventListener('pointercancel', finishNavHandleDrag);
+navSheetHandle?.addEventListener('lostpointercapture', finishNavHandleDrag);
+
+navSectionMenu?.addEventListener('touchstart', (event) => {
+    if (event.touches.length !== 1 || event.target.closest('.nav-sheet-handle')) return;
+    startNavSwipe(event.touches[0].clientX, event.touches[0].clientY, !!event.target.closest('.nav-sheet-options'));
+}, { passive: true });
+
+navSectionMenu?.addEventListener('touchmove', (event) => {
+    if (event.touches.length !== 1 || navHandlePointerId !== null) return;
+    if (moveNavSwipe(event.touches[0].clientX, event.touches[0].clientY)) event.preventDefault();
+}, { passive: false });
+
+navSectionMenu?.addEventListener('touchend', () => {
+    if (navHandlePointerId === null) finishNavSwipe();
+});
+navSectionMenu?.addEventListener('touchcancel', () => {
+    if (navHandlePointerId === null) finishNavSwipe(true);
+});
 
 
+// 配置：主页加载层策略；这些时间控制首屏加载动画和导航栏出现节奏
 // 页面骨架就绪后释放加载层，避免外部图片或 CDN 慢时挡住整页。
 let pageReadyShown = false;
 let pageReadyFallbackId = null;
@@ -70,6 +206,7 @@ function showPageReady() {
         window.clearTimeout(pageReadyFallbackId);
     }
 
+    // 配置：首屏加载层最短展示时间；400ms 越小越快消失，越大动画停留越久
     setTimeout(function() {
         const loadingAnimation = document.getElementById('loading-animation');
         const navbar = document.querySelector('.navbar');
@@ -82,6 +219,7 @@ function showPageReady() {
 
         if (loadingAnimation) {
             loadingAnimation.style.opacity = '0';
+            // 配置：加载层淡出后彻底隐藏的等待时间；要和 CSS transition duration 保持接近
             setTimeout(function() {
                 loadingAnimation.style.display = 'none';
             }, 500);
@@ -89,6 +227,7 @@ function showPageReady() {
     }, 400);
 }
 
+// 配置：兜底释放加载层时间；如果 DOMContentLoaded/load 被外部资源拖慢，700ms 后也会尝试进入页面
 pageReadyFallbackId = window.setTimeout(showPageReady, 700);
 
 if (document.readyState === 'loading') {
@@ -110,6 +249,7 @@ async function fetchHitokoto() {
     if (subtitleElement?.dataset.static === 'true') return;
 
     try {
+        // 配置：首页副标题一言 API；c 参数控制句子分类，max_length 控制最大字数
         const response = await fetch('https://v1.hitokoto.cn/?c=i&c=d&c=e&max_length=30');
         const data = await response.json();
         if (subtitleElement) {
@@ -119,21 +259,24 @@ async function fetchHitokoto() {
     } catch (error) {
         console.error('Failed to fetch hitokoto:', error);
         if (subtitleElement) {
+            // 配置：一言 API 失败时显示的兜底副标题
             subtitleElement.textContent = 'Welcome to Zeora\'s Personal Space';
         }
     }
 }
 
 // 页面加载时获取一言
-fetchHitokoto();
+if (subtitleElement) fetchHitokoto();
 
 // --- 1. Hello 轮播 ---
 const helloText = document.getElementById('hero-text');
+// 配置：首页 hello 轮播文案；只有 index.html 里 hero-text 的 data-static 不是 true 时才会启用
 const greetings = ["hello", "你好", "hola", "bonjour", "こんにちは", "ciao", "你好"];
 let index = 0;
 
 function rotateText() {
     if (helloText?.dataset.static === 'true') return;
+    if (!helloText) return;
 
     helloText.style.opacity = '0';
     helloText.style.transform = 'translateY(10px)';
@@ -145,10 +288,12 @@ function rotateText() {
     }, 600);
 }
 if (helloText?.dataset.static !== 'true') {
+    // 配置：首页 hello 轮播间隔；3000ms 表示每 3 秒切换一次
     setInterval(rotateText, 3000);
 }
 
 // --- 2. Scroll Reveal ---
+// 配置：滚动出现动画触发阈值；0.1 表示元素露出约 10% 时开始显示
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -159,8 +304,12 @@ const observer = new IntersectionObserver((entries) => {
 document.querySelectorAll('.reveal-up').forEach(el => observer.observe(el));
 
 function scrollToId(id) {
-    document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+    const target = document.getElementById(id);
+    if (!target) return;
+    target.scrollIntoView({ behavior: 'smooth' });
 }
+
+// 推荐产品轮播已迁移到 data.js，由渲染后的卡片自动初始化。
 
 // --- 2.1 Coverflow 相册 ---
 function initCoverflowGallery() {
@@ -192,11 +341,15 @@ function initCoverflowGallery() {
         const stageWidth = stage.getBoundingClientRect().width;
         const cardWidth = cards[0].getBoundingClientRect().width;
         const isMobile = window.matchMedia('(max-width: 640px)').matches;
+        // 配置：相册卡片横向间距；移动端和桌面端分别控制封面流展开幅度
         const spread = isMobile
             ? Math.min(cardWidth * 0.62, stageWidth * 0.3)
             : Math.min(cardWidth * 0.72, 280);
+        // 配置：相册 3D 深度；数值越大，非当前图片越往后退
         const depth = isMobile ? 150 : 240;
+        // 配置：相册 Y 轴倾斜角度；数值越大，左右图片透视感越强
         const yTilt = isMobile ? 10 : 12;
+        // 配置：相册旋转角度；数值越大，左右图片倾斜越明显
         const zTilt = isMobile ? 4 : 7;
 
         cards.forEach((card, index) => {
@@ -307,14 +460,16 @@ function initCoverflowGallery() {
 initCoverflowGallery();
 
 // --- 3. Modal & Action Sheet Logic ---
+// 配置：社交弹窗当前链接和值；由 index.html 里每个 openModal(...) 按钮传入
 let currentLink = '';
 let currentValue = '';
 
+// 配置：社交入口弹窗参数说明；type 是标题，value 是可复制账号，link 是跳转地址，iconClass 是图标，color 是图标颜色
 function openModal(type, value, link, iconClass, color) {
     const modal = document.getElementById('contact-modal');
     const iconDiv = document.getElementById('modal-icon');
     
-    // Set Content
+    // 配置：弹窗标题和展示值；这里决定点击社交卡片后弹出的标题和账号/链接文字
     document.getElementById('modal-title').innerText = type.charAt(0).toUpperCase() + type.slice(1);
     document.getElementById('modal-value').innerText = value;
     iconDiv.innerHTML = `<i class="${iconClass}"></i>`;
@@ -323,7 +478,7 @@ function openModal(type, value, link, iconClass, color) {
     currentLink = link;
     currentValue = value;
 
-    // Handle Buttons state
+    // 配置：弹窗按钮显示规则；没有 link 就隐藏“前往链接”，微信公众号隐藏“复制”按钮
     const btnGo = document.getElementById('btn-go');
     const btnCopy = document.getElementById('btn-copy');
     if (!link) {
@@ -377,11 +532,13 @@ function showToast() {
     toast.classList.add('show');
     setTimeout(() => {
         toast.classList.remove('show');
-    }, 2000);
+    }, 2000); // 配置：复制成功提示停留时间；2000ms 表示显示 2 秒
 }
 
 // --- 4. Music Player ---
+// 配置：音乐播放器歌单；每个对象代表一首歌，title/artist 显示在播放器，src 是音频，cover 是封面，lrc 是歌词
 const musicTracks = [
+    // 配置：第 1 首歌；页面首次加载默认从 musicTrackIndex=0 的这首开始
     {
         "title": "青花瓷",
         "artist": "周杰伦",
@@ -389,6 +546,7 @@ const musicTracks = [
         "cover": "https://y.qq.com/music/photo_new/T002R300x300M000002eFUFm2XYZ7z_2.jpg?max_age=2592000",
         "lrc": "https://npm.elemecdn.com/anzhiyu-music@1.0.4/青花瓷/青花瓷.lrc"
     },
+    // 配置：第 2 首歌；复制这一整段对象并放到数组里可新增歌曲
     {
         "title": "稻香",
         "artist": "周杰伦",
@@ -396,6 +554,7 @@ const musicTracks = [
         "cover": "https://y.qq.com/music/photo_new/T002R300x300M000002Neh8l0uciQZ_1.jpg?max_age=2592000",
         "lrc": "https://npm.elemecdn.com/anzhiyu-music@1.0.1/周杰伦/稻香/稻香.lrc"
     },
+    // 配置：第 3 首歌；title 会显示为歌名，artist 会显示为歌手名
     {
         "title": "晴天",
         "artist": "周杰伦",
@@ -403,6 +562,7 @@ const musicTracks = [
         "cover": "https://y.qq.com/music/photo_new/T002R300x300M000000MkMni19ClKG_3.jpg?max_age=2592000",
         "lrc": "https://npm.elemecdn.com/anzhiyu-music@1.0.2/晴天/晴天.lrc"
     },
+    // 配置：第 4 首歌；src 支持 mp3/flac 等浏览器可播放音频地址
     {
         "title": "七里香",
         "artist": "周杰伦",
@@ -410,6 +570,7 @@ const musicTracks = [
         "cover": "https://y.qq.com/music/photo_new/T002R300x300M000003DFRzD192KKD_1.jpg?max_age=2592000",
         "lrc": "https://npm.elemecdn.com/anzhiyu-music@1.0.2/七里香/七里香.lrc"
     },
+    // 配置：第 5 首歌；cover 是播放器封面图，建议使用正方形图片
     {
         "title": "花海",
         "artist": "周杰伦",
@@ -417,6 +578,7 @@ const musicTracks = [
         "cover": "https://y.qq.com/music/photo_new/T002R300x300M000002Neh8l0uciQZ_1.jpg?max_age=2592000",
         "lrc": "https://npm.elemecdn.com/anzhiyu-music-jay@1.0.1/花海/花海.lrc"
     },
+    // 配置：第 6 首歌；lrc 是歌词文件地址，加载失败时会显示“歌词加载失败”
     {
         "title": "反方向的钟",
         "artist": "周杰伦",
@@ -424,6 +586,7 @@ const musicTracks = [
         "cover": "https://y.qq.com/music/photo_new/T002R300x300M000000f01724fd7TH_1.jpg?max_age=2592000",
         "lrc": "https://npm.elemecdn.com/anzhiyu-music-jay@1.0.1/反方向的钟/反方向的钟.lrc"
     },
+    // 配置：第 7 首歌
     {
         "title": "兰亭序",
         "artist": "周杰伦",
@@ -431,6 +594,7 @@ const musicTracks = [
         "cover": "https://y.qq.com/music/photo_new/T002R300x300M000002Neh8l0uciQZ_1.jpg?max_age=2592000",
         "lrc": "https://npm.elemecdn.com/anzhiyu-music@1.0.1/周杰伦/兰亭序/兰亭序.lrc"
     },
+    // 配置：第 8 首歌
     {
         "title": "说好的辛福呢",
         "artist": "周杰伦",
@@ -438,6 +602,7 @@ const musicTracks = [
         "cover": "https://y.qq.com/music/photo_new/T002R300x300M000002Neh8l0uciQZ_1.jpg?max_age=2592000",
         "lrc": "https://npm.elemecdn.com/anzhiyu-music@1.0.2/说好的辛福呢/说好的幸福呢.lrc"
     },
+    // 配置：第 9 首歌
     {
         "title": "我落泪情绪零碎",
         "artist": "周杰伦",
@@ -445,6 +610,7 @@ const musicTracks = [
         "cover": "https://y.qq.com/music/photo_new/T002R300x300M000000bviBl4FjTpO_1.jpg?max_age=2592000",
         "lrc": "https://npm.elemecdn.com/anzhiyu-music@1.0.2/我落泪情绪零碎/我落泪情绪零碎.lrc"
     },
+    // 配置：第 10 首歌
     {
         "title": "听妈妈的话",
         "artist": "周杰伦",
@@ -452,6 +618,7 @@ const musicTracks = [
         "cover": "https://y.qq.com/music/photo_new/T002R300x300M000002jLGWe16Tf1H_1.jpg?max_age=2592000",
         "lrc": "https://npm.elemecdn.com/anzhiyu-music@1.0.2/听妈妈的话/听妈妈的话.lrc"
     },
+    // 配置：第 11 首歌
     {
         "title": "明明就",
         "artist": "周杰伦",
@@ -459,6 +626,7 @@ const musicTracks = [
         "cover": "https://y.qq.com/music/photo_new/T002R300x300M000003Ow85E3pnoqi_1.jpg?max_age=2592000",
         "lrc": "https://npm.elemecdn.com/anzhiyu-music-jay@1.0.1/明明就/明明就.lrc"
     },
+    // 配置：第 12 首歌
     {
         "title": "我是如此相信",
         "artist": "周杰伦",
@@ -466,6 +634,7 @@ const musicTracks = [
         "cover": "https://y.qq.com/music/photo_new/T002R300x300M000001hGx1Z0so1YX_1.jpg?max_age=2592000",
         "lrc": "https://npm.elemecdn.com/anzhiyu-music-jay@1.0.1/我是如此相信/我是如此相信.lrc"
     },
+    // 配置：第 13 首歌
     {
         "title": "发如雪",
         "artist": "周杰伦",
@@ -473,6 +642,7 @@ const musicTracks = [
         "cover": "https://y.qq.com/music/photo_new/T002R300x300M0000024bjiL2aocxT_3.jpg?max_age=2592000",
         "lrc": "https://npm.elemecdn.com/anzhiyu-music@1.0.3/发如雪/发如雪.lrc"
     },
+    // 配置：第 14 首歌
     {
         "title": "以父之名",
         "artist": "周杰伦",
@@ -480,6 +650,7 @@ const musicTracks = [
         "cover": "https://y.qq.com/music/photo_new/T002R300x300M000000MkMni19ClKG_3.jpg?max_age=2592000",
         "lrc": "https://npm.elemecdn.com/anzhiyu-music@1.0.3/以父之名/以父之名.lrc"
     },
+    // 配置：第 15 首歌
     {
         "title": "园游会",
         "artist": "周杰伦",
@@ -487,6 +658,7 @@ const musicTracks = [
         "cover": "https://y.qq.com/music/photo_new/T002R300x300M000003DFRzD192KKD_1.jpg?max_age=2592000",
         "lrc": "https://npm.elemecdn.com/anzhiyu-music@1.0.3/园游会/园游会.lrc"
     },
+    // 配置：第 16 首歌
     {
         "title": "本草纲目",
         "artist": "周杰伦",
@@ -494,6 +666,7 @@ const musicTracks = [
         "cover": "https://y.qq.com/music/photo_new/T002R300x300M000002jLGWe16Tf1H_1.jpg?max_age=2592000",
         "lrc": "https://npm.elemecdn.com/anzhiyu-music@1.0.4/本草纲目/本草纲目.lrc"
     },
+    // 配置：第 17 首歌；数组最后一首播放结束后会自动回到第一首
     {
         "title": "龙卷风",
         "artist": "周杰伦",
@@ -518,6 +691,7 @@ const musicLyrics = document.getElementById('music-lyrics');
 const navLogo = document.querySelector('.navbar-logo');
 const navMusicLyrics = document.getElementById('nav-music-lyrics');
 const navMusicToggle = document.getElementById('nav-music-toggle');
+// 配置：默认播放第几首；0 是第一首，1 是第二首，以此类推
 let musicTrackIndex = 0;
 let currentLyrics = [];
 let currentLyricIndex = -1;
@@ -566,38 +740,20 @@ function updateMusicPlayState(isPlaying) {
 }
 
 function parseLrc(lrcText) {
-    return lrcText
-        .split('\n')
-        .flatMap(line => {
-            const text = line.replace(/\[[^\]]+\]/g, '').trim();
-            const timeTags = [...line.matchAll(/\[(\d{1,2}):(\d{2})(?:\.(\d{1,3}))?\]/g)];
-            return timeTags
-                .filter(() => text)
-                .map(match => {
-                    const minutes = Number(match[1]);
-                    const seconds = Number(match[2]);
-                    const milliseconds = Number((match[3] || '0').padEnd(3, '0'));
-                    return {
-                        time: minutes * 60 + seconds + milliseconds / 1000,
-                        text
-                    };
-                });
-        })
-        .sort((first, second) => first.time - second.time);
+    return lrcText.split('\n').flatMap(line => {
+        const text = line.replace(/\[[^\]]+\]/g, '').trim();
+        const tags = [...line.matchAll(/\[(\d{1,2}):(\d{2})(?:\.(\d{1,3}))?\]/g)];
+        return tags.filter(() => text).map(match => ({
+            time: Number(match[1]) * 60 + Number(match[2]) + Number((match[3] || '0').padEnd(3, '0')) / 1000,
+            text
+        }));
+    }).sort((a, b) => a.time - b.time);
 }
 
 function renderLyrics(lyrics, message = '暂无歌词') {
     currentLyrics = lyrics;
     currentLyricIndex = -1;
-
-    if (!lyrics.length) {
-        if (musicLyrics) musicLyrics.innerHTML = `<p class="is-active">${message}</p>`;
-        updateNavLyric(message);
-        return;
-    }
-
-    if (musicLyrics) musicLyrics.innerHTML = lyrics.map(line => `<p>${line.text}</p>`).join('');
-    updateNavLyric(lyrics[0].text);
+    updateNavLyric(lyrics[0]?.text || message);
 }
 
 async function loadLyrics(track) {
@@ -605,16 +761,13 @@ async function loadLyrics(track) {
         renderLyrics([], '暂无歌词');
         return;
     }
-
     renderLyrics([], '歌词加载中...');
-
     try {
         if (!lyricsCache.has(track.lrc)) {
             const response = await fetch(track.lrc);
             if (!response.ok) throw new Error(`Failed to load lyrics: ${response.status}`);
             lyricsCache.set(track.lrc, parseLrc(await response.text()));
         }
-
         renderLyrics(lyricsCache.get(track.lrc), '暂无歌词');
     } catch (error) {
         console.error(error);
@@ -624,20 +777,11 @@ async function loadLyrics(track) {
 
 function syncLyrics(currentTime) {
     if (!currentLyrics.length) return;
-
     const nextIndex = currentLyrics.findIndex((line, index) => {
         const nextLine = currentLyrics[index + 1];
         return currentTime >= line.time && (!nextLine || currentTime < nextLine.time);
     });
-
     if (nextIndex === -1 || nextIndex === currentLyricIndex) return;
-
-    if (musicLyrics) {
-        const lyricLines = musicLyrics.querySelectorAll('p');
-        lyricLines[currentLyricIndex]?.classList.remove('is-active');
-        lyricLines[nextIndex]?.classList.add('is-active');
-        lyricLines[nextIndex]?.scrollIntoView({ block: 'center', behavior: 'smooth' });
-    }
     updateNavLyric(currentLyrics[nextIndex].text);
     currentLyricIndex = nextIndex;
 }
@@ -705,11 +849,11 @@ function initFooterPixelDrift() {
     const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
 
-    const text = root.dataset.pixelText || 'ZEORA';
-    const mouseRadius = 35;
-    const mouseForce = 30;
-    const particleSize = 1;
-    const particleCount = 50;
+    const text = root.dataset.pixelText || 'ZEORA'; // 配置：页脚粒子文字兜底值；优先读取 index.html 的 data-pixel-text
+    const mouseRadius = 22; // 配置：鼠标影响半径；越大，粒子受鼠标影响范围越宽
+    const mouseForce = 30; // 配置：鼠标推开粒子的力度；越大，交互越明显
+    const particleSize = 1; // 配置：单个粒子的大小；越大，页脚像素字越粗
+    const particleCount = 50; // 配置：粒子密度；越大，字越密但性能消耗也更高
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     let width = 0;

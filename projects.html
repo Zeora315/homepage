@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zeora | Projects</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter/bootstrap/5.3.3/css/bootstrap-grid.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=34">
+</head>
+<body class="antialiased projects-page">
+    <nav class="navbar show">
+        <div class="navbar-container">
+            <button class="navbar-item nav-menu-toggle" id="nav-menu-toggle" type="button" aria-label="打开菜单" aria-controls="nav-section-menu" aria-expanded="false">
+                <img src="img/MdiAppleKeyboardCommand-dark.svg" alt="" class="nav-command-icon nav-command-icon-dark">
+                <img src="img/MdiAppleKeyboardCommand-light.svg" alt="" class="nav-command-icon nav-command-icon-light">
+            </button>
+            <a href="index.html" class="navbar-logo">
+                <img src="img/zeora-logo-light.png" alt="Zeora" class="logo-light">
+                <img src="img/zeora-logo-dark.png" alt="Zeora" class="logo-dark">
+            </a>
+            <button class="navbar-item theme-toggle" id="theme-toggle" type="button" aria-label="切换主题">
+                <img src="img/theme-toggle-icon.svg" alt="切换主题" class="theme-icon-svg">
+            </button>
+        </div>
+    </nav>
+
+    <div class="nav-sheet-layer" id="nav-sheet-layer" aria-hidden="true" inert>
+        <button class="nav-sheet-backdrop" type="button" aria-label="关闭菜单"></button>
+        <div class="nav-section-menu" id="nav-section-menu" role="dialog" aria-modal="true" aria-labelledby="nav-sheet-title" tabindex="-1">
+            <div class="nav-sheet-handle" aria-hidden="true"></div>
+            <h2 id="nav-sheet-title">菜单</h2>
+            <div class="nav-sheet-options">
+                <a href="websites.html" data-target="websites"><i class="fa-solid fa-globe" aria-hidden="true"></i><span>网站</span></a>
+                <a href="index.html#gallery" data-target="gallery"><i class="fa-solid fa-images" aria-hidden="true"></i><span>相册</span></a>
+                <a href="index.html#music" data-target="music"><i class="fa-solid fa-music" aria-hidden="true"></i><span>音乐</span></a>
+                <a href="index.html#social" data-target="social"><i class="fa-solid fa-address-card" aria-hidden="true"></i><span>社交</span></a>
+                <a href="projects.html" data-target="projects"><i class="fa-solid fa-layer-group" aria-hidden="true"></i><span>项目</span></a>
+            </div>
+            <button class="nav-sheet-cancel" type="button">取消</button>
+        </div>
+    </div>
+
+    <main class="projects-main">
+        <section id="projects" class="projects-section reveal-up active" aria-labelledby="projects-title">
+            <div class="projects-heading-block">
+                <p class="projects-kicker">Zeora / Projects</p>
+                <h1 id="projects-title">项目</h1>
+                <p>记录正在构建、维护和持续打磨的作品。</p>
+            </div>
+            <!-- 项目卡片由 data.js 的 products 自动生成，改内容只需改 data.js -->
+            <div class="projects-grid"></div>
+        </section>
+    </main>
+
+    <footer id="social" class="footer-root">
+        <div class="footer-capsule reveal-up">
+            <div class="footer-capsule-inner">
+                <div class="footer-bottom">
+                    <!-- 配置：页脚像素文字；data-pixel-text 会被 script.js 读取并绘制成粒子文字 -->
+                    <div class="footer-pixel-drift" data-pixel-text="ZEORA" aria-label="ZEORA pixel drift">
+                        <canvas class="footer-pixel-canvas"></canvas>
+                    </div>
+                    <div class="footer-icp">
+                        <a href="https://icp.gov.moe/?keyword=20253156" target="_blank" rel="noopener noreferrer">萌 ICP 备 20253156 号</a>
+                        <span class="footer-icp-divider">|</span>
+                        <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">苏 ICP 备 2026019501 号</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="data.js?v=1"></script>
+    <script src="script.js?v=19"></script>
+</body>
+</html>

@@ -253,6 +253,7 @@
 }
 
 :root {
+  /* 配置：微信页默认浅色主题颜色；影响背景、卡片、文字和公众号绿色 */
   --background: #f6f7f8;
   --card-bg: #fff;
   --second-bg: #f7f7f7;
@@ -261,6 +262,7 @@
 }
 
 [data-theme="light"] {
+  /* 配置：微信页浅色模式颜色；和 :root 保持一致，切主题时读取这一组变量 */
   --background: #f6f7f8;
   --card-bg: #fff;
   --second-bg: #f7f7f7;
@@ -269,6 +271,7 @@
 }
 
 [data-theme="dark"] {
+  /* 配置：微信页深色模式颜色；点击主题按钮后会切到这一组变量 */
   --background: #1e2020;
   --card-bg: #0f0f0f;
   --second-bg: #303134;
@@ -318,6 +321,7 @@ body {
 }
 
 .qrcode {
+  /* 配置：公众号二维码尺寸；宽高都改成同一个值可保持正方形 */
   width: 256px;
   height: 256px;
   display: flex;
@@ -342,6 +346,7 @@ body {
 }
 
 .wechatOA-head {
+  /* 配置：公众号头像；改 background-image 的 URL 会影响二维码下方小头像 */
   width: 48px;
   height: 48px;
   background-image: url(http://p.zeora.top/logo);

@@ -1,3 +1,4 @@
+// 配置：微信页视口高度变量；用于移动端浏览器地址栏变化时保持页面满屏
 // 改进vh
 const vh = window.innerHeight * 1;
 document.documentElement.style.setProperty('--vh', `${vh}px`);
@@ -35,6 +36,7 @@ function fallbackCopy(text) {
 }
 
 document.addEventListener('DOMContentLoaded', (event) => {
+  // 配置：微信页 URL 参数；replyText 用来控制“关注公众号并回复”的关键词
   // 获取URL参数
   const urlParams = new URLSearchParams(window.location.search);
   const replyText = urlParams.get('replyText');
@@ -52,7 +54,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
   document.getElementById('wechat-need-reply-copybtn').addEventListener('click', function () {
     const textToCopy = document.getElementById('wechat-need-reply-text').innerText;
     const replyBackElement = document.getElementById('wechat-need-reply-back');
-    const originalText = '即可获取资源';
+    const originalText = '即可获取资源'; // 配置：复制按钮恢复后的默认提示文字
 
     copyText(textToCopy).then((ok) => {
       if (ok) {
@@ -72,7 +74,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
   // 主题切换（与首页一致）
   var themeBtn = document.getElementById('wechat-theme-toggle');
   var html = document.documentElement;
-  var savedTheme = localStorage.getItem('theme') || 'light';
+  var savedTheme = localStorage.getItem('theme') || 'light'; // 配置：微信页默认主题；没有本地记录时使用 light
   if (savedTheme === 'dark') html.setAttribute('data-theme', 'dark');
 
   if (themeBtn) {
@@ -93,7 +95,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     var isHidden = function () { return loading.classList.contains('is-hidden') || loading.style.display === 'none'; };
     var showSkipTimer = setTimeout(function () {
       if (!isHidden()) skipBtn && skipBtn.classList.add('is-visible');
-    }, 3000);
+    }, 3000); // 配置：加载超过 3 秒才显示“跳过动画”按钮
     var hide = function () {
       if (isHidden()) return;
       clearTimeout(showSkipTimer);
@@ -101,10 +103,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
       loading.classList.add('is-hidden');
       setTimeout(function () {
         loading.style.display = 'none';
-      }, 350);
+      }, 350); // 配置：加载层淡出后隐藏的延迟，需接近 CSS 的过渡时间
     };
     if (skipBtn) skipBtn.addEventListener('click', hide);
-    // 自动收尾：2.5s 后（让动画能被人眼看到；load 完成则提前 200ms 收尾）
+    // 配置：微信页加载动画最长停留时间；2.5s 后自动收尾，load 完成则提前 200ms 收尾
     var autoHide = setTimeout(hide, 2500);
     window.addEventListener('load', function () {
       clearTimeout(autoHide);

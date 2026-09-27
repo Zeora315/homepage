@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zeora | Websites</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap-grid.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=34">
+</head>
+<body class="antialiased websites-page">
+    <nav class="navbar show">
+        <div class="navbar-container">
+            <button class="navbar-item nav-menu-toggle" id="nav-menu-toggle" type="button" aria-label="打开菜单" aria-controls="nav-section-menu" aria-expanded="false">
+                <img src="img/MdiAppleKeyboardCommand-dark.svg" alt="" class="nav-command-icon nav-command-icon-dark">
+                <img src="img/MdiAppleKeyboardCommand-light.svg" alt="" class="nav-command-icon nav-command-icon-light">
+            </button>
+            <a href="index.html" class="navbar-logo">
+                <img src="img/zeora-logo-light.png" alt="Zeora" class="logo-light">
+                <img src="img/zeora-logo-dark.png" alt="Zeora" class="logo-dark">
+                <span id="nav-music-lyrics" class="nav-music-lyrics">歌词加载中...</span>
+                <button id="nav-music-toggle" class="nav-music-toggle" type="button" aria-label="暂停播放">
+                    <i class="fa-solid fa-pause"></i>
+                </button>
+            </a>
+            <button class="navbar-item theme-toggle" id="theme-toggle" type="button" aria-label="切换主题">
+                <img src="img/theme-toggle-icon.svg" alt="切换主题" class="theme-icon-svg">
+            </button>
+        </div>
+    </nav>
+
+    <div class="nav-sheet-layer" id="nav-sheet-layer" aria-hidden="true" inert>
+        <button class="nav-sheet-backdrop" type="button" aria-label="关闭菜单"></button>
+        <div class="nav-section-menu" id="nav-section-menu" role="dialog" aria-modal="true" aria-labelledby="nav-sheet-title" tabindex="-1">
+            <div class="nav-sheet-handle" aria-hidden="true"></div>
+            <h2 id="nav-sheet-title">菜单</h2>
+            <div class="nav-sheet-options">
+                <a href="websites.html" data-target="websites"><i class="fa-solid fa-globe" aria-hidden="true"></i><span>网站</span></a>
+                <a href="gallery.html" data-target="gallery"><i class="fa-solid fa-images" aria-hidden="true"></i><span>相册</span></a>
+                <a href="index.html#music" data-target="music"><i class="fa-solid fa-music" aria-hidden="true"></i><span>音乐</span></a>
+                <a href="index.html#social" data-target="social"><i class="fa-solid fa-address-card" aria-hidden="true"></i><span>社交</span></a>
+                <a href="projects.html" data-target="projects"><i class="fa-solid fa-layer-group" aria-hidden="true"></i><span>我的项目</span></a>
+            </div>
+            <button class="nav-sheet-cancel" type="button">取消</button>
+        </div>
+    </div>
+
+    <div id="contact-modal" class="modal-overlay" onclick="closeModal(event)">
+        <div class="ios-action-sheet" onclick="event.stopPropagation()">
+            <div id="modal-icon" class="mb-4 text-4xl text-gray-800"></div>
+            <h3 id="modal-title" class="text-xl font-bold mb-1 text-black">Contact</h3>
+            <p id="modal-value" class="text-gray-500 text-sm mb-6 break-all">ID / Link</p>
+            <div class="space-y-3">
+                <button id="btn-copy" class="action-btn btn-secondary" onclick="handleCopy()"><i class="fa-regular fa-copy mr-2"></i> 复制 ID / 账号</button>
+                <button id="btn-go" class="action-btn btn-primary" onclick="handleGo()"><i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> 前往链接</button>
+                <button class="text-gray-400 text-sm mt-4 hover:text-gray-600 transition-colors" onclick="closeModalDirect()">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="site-page" id="site-page">
+    <main class="container mx-auto px-4 pb-32 websites-main" style="max-width: 1100px; padding-top: 132px;">
+        <section id="websites" class="services-section reveal-up active" aria-labelledby="services-title">
+            <div class="container mx-auto px-4" style="max-width: 1100px;">
+                <div class="services-heading">
+                    <p class="services-kicker">Zeora / Services</p>
+                    <h1 id="services-title">网站</h1>
+                    <p>正在使用和维护的网站入口</p>
+                </div>
+                <div class="services-grid">
+                    <article class="service-item">
+                        <div class="service-icon service-icon-blog"><i class="fa-solid fa-book-open"></i></div>
+                        <div class="service-content">
+                            <div class="service-title-row"><h4>Blog</h4><span class="service-badge hot">热门</span></div>
+                            <p>分享科技与日常生活</p>
+                            <a href="https://blog.zeora.top" class="service-link" target="_blank" rel="noopener noreferrer">访问</a>
+                        </div>
+                    </article>
+                    <article class="service-item">
+                        <div class="service-icon service-icon-chat"><i class="fa-solid fa-comments"></i></div>
+                        <div class="service-content">
+                            <div class="service-title-row"><h4>即时通讯</h4></div>
+                            <p>端到端加密即时通讯</p>
+                            <a href="https://chat.315996.xyz/" class="service-link" target="_blank" rel="noopener noreferrer">访问</a>
+                        </div>
+                    </article>
+                    <article class="service-item">
+                        <div class="service-icon service-icon-news"><i class="fa-solid fa-newspaper"></i></div>
+                        <div class="service-content">
+                            <div class="service-title-row"><h4>NewsNow</h4><span class="service-badge new">新品</span></div>
+                            <p>实时热点资讯</p>
+                            <a href="https://news.zeora.top/" class="service-link" target="_blank" rel="noopener noreferrer">访问</a>
+                        </div>
+                    </article>
+                    <article class="service-item">
+                        <div class="service-icon service-icon-status"><i class="fa-solid fa-server"></i></div>
+                        <div class="service-content">
+                            <div class="service-title-row"><h4>Status</h4></div>
+                            <p>服务状态监控</p>
+                            <a href="https://status.zeora.top/" class="service-link" target="_blank" rel="noopener noreferrer">访问</a>
+                        </div>
+                    </article>
+                    <article class="service-item">
+                        <div class="service-icon service-icon-bbs"><i class="fa-solid fa-users"></i></div>
+                        <div class="service-content">
+                            <div class="service-title-row"><h4>论坛BBS</h4></div>
+                            <p>社区交流平台</p>
+                            <a href="https://z-bbs.page.gd/" class="service-link" target="_blank" rel="noopener noreferrer">访问</a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="social" class="footer-root">
+        <div class="footer-capsule reveal-up">
+            <div class="footer-capsule-inner">
+                <div class="footer-bottom">
+                    <!-- 配置：页脚像素文字；data-pixel-text 会被 script.js 读取并绘制成粒子文字 -->
+                    <div class="footer-pixel-drift" data-pixel-text="ZEORA" aria-label="ZEORA pixel drift">
+                        <canvas class="footer-pixel-canvas"></canvas>
+                    </div>
+                    <div class="footer-icp">
+                        <!-- 配置：备案链接 1；href 和显示文本分别控制跳转地址与页脚显示备案号 -->
+                        <a href="https://icp.gov.moe/?keyword=20253156" target="_blank" rel="noopener noreferrer" class="hover:text-gray-600 transition-colors">
+                            萌 ICP 备 20253156 号
+                        </a>
+                        <span class="footer-icp-divider">|</span>
+                        <!-- 配置：备案链接 2；这里是工信部备案跳转和显示文案 -->
+                        <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" class="hover:text-gray-600 transition-colors">
+                            苏 ICP 备 2026019501 号
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    </div>
+    <script src="script.js?v=19"></script>
+</body>
+</html>

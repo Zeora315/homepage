@@ -3,12 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 配置：浏览器标签页标题；改这里会影响主页在浏览器标签和搜索结果里的标题 -->
     <title>Zeora | Pro Space</title>
     
+    <!-- 配置：外部 CSS 库；Bootstrap 控制网格，Font Awesome 控制图标，Tailwind 控制工具类 -->
     <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap-grid.min.css" rel="stylesheet">
     <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.bootcdn.net/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=23">
+    <!-- 配置：主样式文件和缓存版本号；修改版本号可强制浏览器重新加载 style.css -->
+    <link rel="stylesheet" href="style.css?v=34">
 </head>
 <body class="antialiased">
 
@@ -17,21 +20,12 @@
     <!-- 导航栏 -->
     <nav class="navbar">
         <div class="navbar-container">
-            <!-- 左侧：页面菜单 -->
-            <button class="navbar-item nav-menu-toggle" id="nav-menu-toggle" type="button" aria-label="打开菜单" aria-expanded="false">
+            <button class="navbar-item nav-menu-toggle" id="nav-menu-toggle" type="button" aria-label="打开菜单" aria-controls="nav-section-menu" aria-expanded="false">
                 <img src="img/MdiAppleKeyboardCommand-dark.svg" alt="" class="nav-command-icon nav-command-icon-dark">
                 <img src="img/MdiAppleKeyboardCommand-light.svg" alt="" class="nav-command-icon nav-command-icon-light">
             </button>
 
-            <div class="nav-section-menu" id="nav-section-menu" aria-hidden="true">
-                <button type="button" data-target="websites"><i class="fa-solid fa-globe"></i><span>网站</span></button>
-                <button type="button" data-target="gallery"><i class="fa-solid fa-images"></i><span>相册</span></button>
-                <button type="button" data-target="music"><i class="fa-solid fa-music"></i><span>音乐</span></button>
-                <button type="button" data-target="social"><i class="fa-solid fa-address-card"></i><span>社交</span></button>
-            </div>
-            
-            <!-- 中间：品牌logo -->
-            <a href="" class="navbar-logo" onclick="scrollToTop()">
+            <a href="index.html" class="navbar-logo">
                 <img src="img/zeora-logo-light.png" alt="Zeora" class="logo-light">
                 <img src="img/zeora-logo-dark.png" alt="Zeora" class="logo-dark">
                 <span id="nav-music-lyrics" class="nav-music-lyrics">歌词加载中...</span>
@@ -39,39 +33,50 @@
                     <i class="fa-solid fa-pause"></i>
                 </button>
             </a>
-            
-            <!-- 右侧：主题切换 -->
-            <button class="navbar-item theme-toggle" id="theme-toggle" aria-label="切换主题">
+
+            <button class="navbar-item theme-toggle" id="theme-toggle" type="button" aria-label="切换主题">
                 <img src="img/theme-toggle-icon.svg" alt="切换主题" class="theme-icon-svg">
             </button>
         </div>
     </nav>
+
+    <div class="nav-sheet-layer" id="nav-sheet-layer" aria-hidden="true" inert>
+        <button class="nav-sheet-backdrop" type="button" aria-label="关闭菜单"></button>
+        <div class="nav-section-menu" id="nav-section-menu" role="dialog" aria-modal="true" aria-labelledby="nav-sheet-title" tabindex="-1">
+            <div class="nav-sheet-handle" aria-hidden="true"></div>
+            <h2 id="nav-sheet-title">菜单</h2>
+            <div class="nav-sheet-options">
+                <a href="websites.html" data-target="websites"><i class="fa-solid fa-globe" aria-hidden="true"></i><span>网站</span></a>
+                <a href="#gallery" data-target="gallery"><i class="fa-solid fa-images" aria-hidden="true"></i><span>相册</span></a>
+                <a href="#music" data-target="music"><i class="fa-solid fa-music" aria-hidden="true"></i><span>音乐</span></a>
+                <a href="#social" data-target="social"><i class="fa-solid fa-address-card" aria-hidden="true"></i><span>社交</span></a>
+                <a href="projects.html" data-target="projects"><i class="fa-solid fa-layer-group" aria-hidden="true"></i><span>我的项目</span></a>
+            </div>
+            <button class="nav-sheet-cancel" type="button">取消</button>
+        </div>
+    </div>
 
     <div id="contact-modal" class="modal-overlay" onclick="closeModal(event)">
         <div class="ios-action-sheet" onclick="event.stopPropagation()">
             <div id="modal-icon" class="mb-4 text-4xl text-gray-800"></div>
             <h3 id="modal-title" class="text-xl font-bold mb-1 text-black">Contact</h3>
             <p id="modal-value" class="text-gray-500 text-sm mb-6 break-all">ID / Link</p>
-            
             <div class="space-y-3">
-                <button id="btn-copy" class="action-btn btn-secondary" onclick="handleCopy()">
-                    <i class="fa-regular fa-copy mr-2"></i> 复制 ID / 账号
-                </button>
-                <button id="btn-go" class="action-btn btn-primary" onclick="handleGo()">
-                    <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> 前往链接
-                </button>
+                <button id="btn-copy" class="action-btn btn-secondary" onclick="handleCopy()"><i class="fa-regular fa-copy mr-2"></i> 复制 ID / 账号</button>
+                <button id="btn-go" class="action-btn btn-primary" onclick="handleGo()"><i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> 前往链接</button>
                 <button class="text-gray-400 text-sm mt-4 hover:text-gray-600 transition-colors" onclick="closeModalDirect()">取消</button>
             </div>
         </div>
     </div>
 
+    <div class="site-page" id="site-page">
     <section class="hero-profile-section h-screen w-full flex flex-col justify-center relative">
         <div class="hero-profile-container z-10 reveal-up">
             <div class="hero-profile-content">
                 <img class="hero-avatar" src="http://p.zeora.top/logo" alt="Zeora 头像">
                 <div class="hero-profile-copy">
                     <h1 id="hero-text" class="hero-profile-title" data-static="true">
-                        Hi there，I‘am <span class="hero-gradient-name">Zeora</span>
+                        Hi, I'm <span class="hero-gradient-name">Zeora</span>
                     </h1>
                     <p id="hero-subtitle" class="hero-profile-subtitle">
                         Loading...
@@ -92,14 +97,14 @@
             </div>
         </div>
 
-        <div class="hero-scroll-indicator cursor-pointer opacity-40 hover:opacity-100 transition-opacity" onclick="scrollToId('philosophy')">
+        <div class="hero-scroll-indicator cursor-pointer opacity-40 hover:opacity-100 transition-opacity" onclick="scrollToId('about')" role="button" tabindex="0" aria-label="滑动查看关于我" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); scrollToId('about'); }">
             <i class="fa-solid fa-chevron-down text-2xl"></i>
         </div>
     </section>
 
     <div class="container mx-auto px-4 pb-32" style="max-width: 1100px;">
 
-        <div id="philosophy" class="row justify-content-center py-24 md:py-32">
+        <section id="philosophy" class="row justify-content-center py-24 md:py-32">
             <div class="col-12 col-md-10 col-lg-8 text-center reveal-up">
                 <h2 class="text-3xl md:text-5xl font-semibold leading-tight text-black mb-8">
                     Coding with <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">Communication & Innovation.</span>
@@ -108,197 +113,103 @@
                     「征服自己，就能征服世界」
                 </p>
             </div>
-        </div>
+        </section>
 
-        <div class="mb-32">
-            <div class="row g-4">
-                <div class="col-12 mb-2 reveal-up"><h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest pl-2">Highlights</h3></div>
+        <!-- 关于我：头像居中，左右各 4 个胶囊标签上下浮动。 -->
+        <section id="about" class="about-section reveal-up">
+            <div class="container mx-auto px-4" style="max-width: 900px;">
+                <div class="about-stage">
+                    <!-- 配置：关于我左侧胶囊；每个 li 一条标签，增删 li 即可增减标签 -->
+                    <ul class="about-tips about-tips-left">
+                        <li class="about-tip"><span class="about-tip-emoji" aria-hidden="true">🤖️</span>数码科技爱好者</li>
+                        <li class="about-tip"><span class="about-tip-emoji" aria-hidden="true">🔍</span>分享与热心帮助</li>
+                        <li class="about-tip"><span class="about-tip-emoji" aria-hidden="true">🏠</span>智能家居小能手</li>
+                        <li class="about-tip"><span class="about-tip-emoji" aria-hidden="true">🌐</span>业余建站别谈技术</li>
+                    </ul>
 
-                <div class="col-12 col-md-8 reveal-up">
-                    <div class="bento-card p-8 md:p-10 flex flex-col justify-between">
-                        <div>
-                            <span class="inline-block px-3 py-1 bg-black text-white text-xs font-bold rounded-full mb-4">PROFILE</span>
-                            <h3 class="text-3xl font-bold mb-4 text-black">Programming & Cybersecurity Learner.</h3>
-                            <p class="text-gray-500 leading-relaxed">中学生 · 编程与网络安全学习者<br>与代码交流，与服务器沟通</p>
+                    <div class="about-avatar-wrap">
+                        <div class="about-avatar-frame">
+                            <!-- 配置：关于我头像地址；可换成任意正方形图片 -->
+                            <img class="about-avatar" src="http://p.zeora.top/logo" alt="Zeora 头像">
+                            <span class="about-status-dot" aria-hidden="true"></span>
                         </div>
-                        <div class="mt-8 flex gap-3">
-                            <span class="px-3 py-1 bg-gray-100 rounded-lg text-xs text-gray-600 font-mono">Python</span>
-                            <span class="px-3 py-1 bg-gray-100 rounded-lg text-xs text-gray-600 font-mono">Node.js</span>
-                            <span class="px-3 py-1 bg-gray-100 rounded-lg text-xs text-gray-600 font-mono">DevOps</span>
-                            <span class="px-3 py-1 bg-gray-100 rounded-lg text-xs text-gray-600 font-mono">Linux</span>
-                            <span class="px-3 py-1 bg-gray-100 rounded-lg text-xs text-gray-600 font-mono">Design</span>
-                        </div>
+                        <div class="about-avatar-name">Hi, I'm Zeora</div>
                     </div>
+
+                    <!-- 配置：关于我右侧胶囊；增删规则同左侧 -->
+                    <ul class="about-tips about-tips-right">
+                        <li class="about-tip">居家养狗小达人 <span class="about-tip-emoji" aria-hidden="true">🐶</span></li>
+                        <li class="about-tip">脚踏实地行动派 <span class="about-tip-emoji" aria-hidden="true">🏃</span></li>
+                        <li class="about-tip">团队小组发动机 <span class="about-tip-emoji" aria-hidden="true">🧱</span></li>
+                        <li class="about-tip">DIY折腾小能手 <span class="about-tip-emoji" aria-hidden="true">👉</span></li>
+                    </ul>
                 </div>
 
-                <div class="col-12 col-md-4 reveal-up" style="transition-delay: 100ms;">
-                    <div class="bento-card p-8">
-                        <div class="h-full flex flex-col justify-between">
-                            <i class="fa-solid fa-bolt text-4xl text-blue-500 opacity-90"></i>
-                            <div>
-                                <h4 class="text-2xl font-bold mb-1 text-black">Tech Inno</h4>
-                                <p class="text-gray-500 text-sm">学习、实验、创作与创新</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                
-                
             </div>
-        </div>
+        </section>
 
-        <!-- 服务入口区域 -->
-        <section id="websites" class="services-section reveal-up" aria-labelledby="services-title">
+        <!-- 推荐区域：预留 6 个推荐位；后续只需替换卡片内容和图片。 -->
+        <section id="recommendations" class="recommendations-section reveal-up" aria-labelledby="recommendations-title">
             <div class="container mx-auto px-4" style="max-width: 1100px;">
-                <h3 id="services-title" class="text-xs font-bold text-gray-400 uppercase tracking-widest text-center mb-10">
-                    WEBSITES
-                </h3>
-
-                <div class="services-grid">
-                    <article class="service-item">
-                        <div class="service-icon service-icon-blog">
-                            <i class="fa-solid fa-book-open"></i>
-                        </div>
-                        <div class="service-content">
-                            <div class="service-title-row">
-                                <h4>Blog</h4>
-                                <span class="service-badge hot">热门</span>
-                            </div>
-                            <p>分享科技与日常生活</p>
-                            <a href="https://blog.zeora.top" class="service-link" target="_blank" rel="noopener noreferrer">访问</a>
-                        </div>
-                    </article>
-
-                    <article class="service-item">
-                        <div class="service-icon service-icon-chat">
-                            <i class="fa-solid fa-comments"></i>
-                        </div>
-                        <div class="service-content">
-                            <div class="service-title-row">
-                                <h4>即时通讯</h4>
-                            </div>
-                            <p>端到端加密即时通讯</p>
-                            <a href="https://chat.315996.xyz/" class="service-link" target="_blank" rel="noopener noreferrer">访问</a>
-                        </div>
-                    </article>
-
-                    <article class="service-item">
-                        <div class="service-icon service-icon-news">
-                            <i class="fa-solid fa-newspaper"></i>
-                        </div>
-                        <div class="service-content">
-                            <div class="service-title-row">
-                                <h4>NewsNow</h4>
-                                <span class="service-badge new">新品</span>
-                            </div>
-                            <p>实时热点资讯</p>
-                            <a href="https://news.zeora.top/" class="service-link" target="_blank" rel="noopener noreferrer">访问</a>
-                        </div>
-                    </article>
-
-                    <article class="service-item">
-                        <div class="service-icon service-icon-status">
-                            <i class="fa-solid fa-server"></i>
-                        </div>
-                        <div class="service-content">
-                            <div class="service-title-row">
-                                <h4>Status</h4>
-                            </div>
-                            <p>服务状态监控</p>
-                            <a href="https://status.zeora.top/" class="service-link" target="_blank" rel="noopener noreferrer">访问</a>
-                        </div>
-                    </article>
-
-                    <article class="service-item">
-                        <div class="service-icon service-icon-bbs">
-                            <i class="fa-solid fa-users"></i>
-                        </div>
-                        <div class="service-content">
-                            <div class="service-title-row">
-                                <h4>论坛BBS</h4>
-                            </div>
-                            <p>社区交流平台</p>
-                            <a href="https://z-bbs.page.gd/" class="service-link" target="_blank" rel="noopener noreferrer">访问</a>
-                        </div>
-                    </article>
+                <div class="recommendations-heading">
+                    <div>
+                        <p class="recommendations-kicker">推荐</p>
+                        <h2 id="recommendations-title">这是我为你主要推荐的产品</h2>
+                    </div>
+                </div>
+                <div class="recommendations-viewport">
+                    <!-- 推荐卡片由 data.js 的 recommendations 自动生成，改内容只需改 data.js -->
+                    <div class="recommendations-track"></div>
+                </div>
+                <div class="recommendations-controls" aria-label="推荐内容切换">
+                    <button class="recommendation-arrow recommendation-arrow-prev" type="button" aria-label="上一个推荐"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
+                    <button class="recommendation-arrow recommendation-arrow-next" type="button" aria-label="下一个推荐"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
                 </div>
             </div>
         </section>
 
-
-        <!-- 图片轮播区域 -->
-        <div id="gallery" class="carousel-section py-20 reveal-up">
-            <div class="container mx-auto px-4 mb-8" style="max-width: 1100px;">
-                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest text-center">
-                    Gallery
-                </h3>
+        <!-- 相册：从 gallery.html 搬到首页，保留 Coverflow 交互。 -->
+        <section id="gallery" class="carousel-section reveal-up" aria-labelledby="gallery-title">
+            <div class="recommendations-heading gallery-heading">
+                <div>
+                    <p class="recommendations-kicker">相册</p>
+                    <h2 id="gallery-title">记录生活，也记录灵感</h2>
+                </div>
             </div>
             <div class="coverflow-gallery" aria-roledescription="carousel" aria-label="Zeora 相册" tabindex="0">
                 <div class="coverflow-stage">
-                    <figure class="coverflow-card" data-title="风景">
-                        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&h=1200&fit=crop" alt="风景" draggable="false" />
-                    </figure>
-                    <figure class="coverflow-card" data-title="代码">
-                        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=900&h=1200&fit=crop" alt="代码" draggable="false" />
-                    </figure>
-                    <figure class="coverflow-card" data-title="团队">
-                        <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=900&h=1200&fit=crop" alt="团队" draggable="false" />
-                    </figure>
-                    <figure class="coverflow-card" data-title="编程">
-                        <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=900&h=1200&fit=crop" alt="编程" draggable="false" />
-                    </figure>
-                    <figure class="coverflow-card" data-title="设计">
-                        <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=900&h=1200&fit=crop" alt="设计" draggable="false" />
-                    </figure>
+                    <figure class="coverflow-card" data-title="风景"><img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&h=1200&fit=crop" alt="风景" draggable="false"></figure>
+                    <figure class="coverflow-card" data-title="代码"><img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=900&h=1200&fit=crop" alt="代码" draggable="false"></figure>
+                    <figure class="coverflow-card" data-title="团队"><img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=900&h=1200&fit=crop" alt="团队" draggable="false"></figure>
+                    <figure class="coverflow-card" data-title="编程"><img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=900&h=1200&fit=crop" alt="编程" draggable="false"></figure>
+                    <figure class="coverflow-card" data-title="设计"><img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=900&h=1200&fit=crop" alt="设计" draggable="false"></figure>
                 </div>
             </div>
             <div class="carousel-controls" aria-label="相册控制">
-                <button class="carousel-btn carousel-btn-prev" type="button" aria-label="上一张">
-                    <i class="fa-solid fa-chevron-left"></i>
-                </button>
+                <button class="carousel-btn carousel-btn-prev" type="button" aria-label="上一张"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
                 <div class="coverflow-dots" role="tablist" aria-label="选择相册图片"></div>
-                <button class="carousel-btn carousel-btn-next" type="button" aria-label="下一张">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </button>
+                <button class="carousel-btn carousel-btn-next" type="button" aria-label="下一张"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
             </div>
-        </div>
+        </section>
 
-        <!-- 音乐播放器 -->
+        <!-- 音乐播放器：首页原始音乐区块。 -->
         <section id="music" class="music-section reveal-up" aria-labelledby="music-title">
             <div class="container mx-auto px-4" style="max-width: 900px;">
-                <h3 id="music-title" class="text-xs font-bold text-gray-400 uppercase tracking-widest text-center mb-8">
-                    Music
-                </h3>
-
+                <div class="recommendations-heading music-heading">
+                    <div>
+                        <p class="recommendations-kicker">音乐</p>
+                        <h2 id="music-title">让旋律陪你走一段路</h2>
+                    </div>
+                </div>
                 <div class="music-card">
-                    <div class="music-cover">
-                        <img id="music-cover-img" src="https://y.qq.com/music/photo_new/T002R300x300M000002eFUFm2XYZ7z_2.jpg?max_age=2592000" alt="音乐封面">
-                    </div>
-
-                    <div class="music-meta">
-                        <h4 id="music-song-title">青花瓷</h4>
-                        <p id="music-song-artist">周杰伦</p>
-                    </div>
-
-                    <div class="music-progress-wrap">
-                        <span id="music-current-time">0:00</span>
-                        <input id="music-progress" class="music-progress" type="range" min="0" max="100" value="0" aria-label="音乐播放进度">
-                        <span id="music-duration">0:00</span>
-                    </div>
-
+                    <div class="music-cover"><img id="music-cover-img" src="https://y.qq.com/music/photo_new/T002R300x300M000002eFUFm2XYZ7z_2.jpg?max_age=2592000" alt="音乐封面"></div>
+                    <div class="music-meta"><h4 id="music-song-title">青花瓷</h4><p id="music-song-artist">周杰伦</p></div>
+                    <div class="music-progress-wrap"><span id="music-current-time">0:00</span><input id="music-progress" class="music-progress" type="range" min="0" max="100" value="0" aria-label="音乐播放进度"><span id="music-duration">0:00</span></div>
                     <div class="music-controls">
-                        <button id="music-prev" class="music-btn music-btn-ghost" aria-label="上一首">
-                            <i class="fa-solid fa-backward-step"></i>
-                        </button>
-                        <button id="music-play" class="music-btn music-btn-primary" aria-label="播放或暂停">
-                            <i class="fa-solid fa-play"></i>
-                        </button>
-                        <button id="music-next" class="music-btn music-btn-ghost" aria-label="下一首">
-                            <i class="fa-solid fa-forward-step"></i>
-                        </button>
+                        <button id="music-prev" class="music-btn music-btn-ghost" type="button" aria-label="上一首"><i class="fa-solid fa-backward-step"></i></button>
+                        <button id="music-play" class="music-btn music-btn-primary" type="button" aria-label="播放或暂停"><i class="fa-solid fa-play"></i></button>
+                        <button id="music-next" class="music-btn music-btn-ghost" type="button" aria-label="下一首"><i class="fa-solid fa-forward-step"></i></button>
                     </div>
-
                     <audio id="music-audio" preload="metadata"></audio>
                 </div>
             </div>
@@ -309,12 +220,16 @@
     <footer id="social" class="footer-root">
         <section class="social-section reveal-up">
             <div class="container mx-auto px-4" style="max-width: 900px;">
-                <div class="text-center mb-10">
-                    <h2 class="text-4xl font-bold mb-2 tracking-tight text-black">Get in touch.</h2>
-                    <p class="text-gray-500">点击下方图标选择操作</p>
+                <div class="recommendations-heading social-heading">
+                    <div>
+                        <!-- 配置：社交区标题和说明；改这里会影响页脚联系入口上方文案 -->
+                        <p class="recommendations-kicker">社交</p>
+                        <h2>和我保持联系</h2>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <!-- 配置：社交卡片-微信公众号；openModal(type, 账号显示值, 跳转链接, 图标 class, 主题色) -->
                     <button onclick="openModal('wechat', '武林wai传', 'wechat.html', 'fa-brands fa-weixin', '#22c55e')"
                         class="group p-6 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-all flex flex-col items-center justify-center border border-transparent hover:border-gray-200">
                         <i class="fa-brands fa-weixin text-3xl text-gray-400 group-hover:text-[#22c55e] mb-3 transition-colors"></i>
@@ -322,6 +237,7 @@
                         <span class="text-xs text-gray-400 mt-1">武林wai传</span>
                     </button>
 
+                    <!-- 配置：社交卡片-YouTube；第二个参数是弹窗里复制/展示的账号，第三个参数是前往链接 -->
                     <button onclick="openModal('youtube', '@zeora315', 'https://youtube.com/@zeora315', 'fa-brands fa-youtube', '#FF0000')"
                         class="group p-6 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-all flex flex-col items-center justify-center border border-transparent hover:border-gray-200">
                         <i class="fa-brands fa-youtube text-3xl text-gray-400 group-hover:text-[#FF0000] mb-3 transition-colors"></i>
@@ -329,6 +245,7 @@
                         <span class="text-xs text-gray-400 mt-1">@zeora315</span>
                     </button>
 
+                    <!-- 配置：社交卡片-X/Twitter；按钮文字和 openModal 里的账号要一起改，避免显示不一致 -->
                     <button onclick="openModal('twitter', '@zeora315', 'https://twitter.com/zeora315', 'fa-brands fa-x-twitter', '#000000')"
                         class="group p-6 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-all flex flex-col items-center justify-center border border-transparent hover:border-gray-200">
                         <i class="fa-brands fa-x-twitter text-3xl text-gray-400 group-hover:text-black mb-3 transition-colors"></i>
@@ -336,6 +253,7 @@
                         <span class="text-xs text-gray-400 mt-1">@zeora315</span>
                     </button>
 
+                    <!-- 配置：社交卡片-QQ；第三个参数为 null 表示只复制账号，不显示“前往链接”按钮 -->
                     <button onclick="openModal('qq', '2141672185', null, 'fa-brands fa-qq', '#12B7F5')"
                         class="group p-6 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-all flex flex-col items-center justify-center border border-transparent hover:border-gray-200">
                         <i class="fa-brands fa-qq text-3xl text-gray-400 group-hover:text-[#12B7F5] mb-3 transition-colors"></i>
@@ -343,6 +261,7 @@
                         <span class="text-xs text-gray-400 mt-1">2141672185</span>
                     </button>
 
+                    <!-- 配置：社交卡片-Email；mailto: 会打开用户默认邮件客户端 -->
                     <button onclick="openModal('email', 'mail@315996.xyz', 'mailto:mail@315996.xyz', 'fa-solid fa-envelope', '#555')"
                         class="group p-6 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-all flex flex-col items-center justify-center border border-transparent hover:border-gray-200">
                         <i class="fa-solid fa-envelope text-3xl text-gray-400 group-hover:text-gray-600 mb-3 transition-colors"></i>
@@ -350,6 +269,7 @@
                         <span class="text-xs text-gray-400 mt-1 text-nowrap overflow-hidden w-full text-ellipsis">mail@315996.xyz</span>
                     </button>
 
+                    <!-- 配置：社交卡片-GitHub；改账号时同步修改 value、href 和卡片底部文字 -->
                     <button onclick="openModal('github', 'zeora315', 'https://github.com/zeora315', 'fa-brands fa-github', '#181717')"
                         class="group p-6 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-all flex flex-col items-center justify-center border border-transparent hover:border-gray-200">
                         <i class="fa-brands fa-github text-3xl text-gray-400 group-hover:text-[#181717] mb-3 transition-colors"></i>
@@ -357,6 +277,7 @@
                         <span class="text-xs text-gray-400 mt-1">zeora315</span>
                     </button>
 
+                    <!-- 配置：社交卡片-Bilibili；数字 ID 同时展示在卡片和弹窗里 -->
                     <button onclick="openModal('bilibili', '3546663318718739', 'https://space.bilibili.com/3546663318718739', 'fa-brands fa-bilibili', '#fb7299')"
                         class="group p-6 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-all flex flex-col items-center justify-center border border-transparent hover:border-gray-200">
                         <i class="fa-brands fa-bilibili text-3xl text-gray-400 group-hover:text-[#fb7299] mb-3 transition-colors"></i>
@@ -364,6 +285,7 @@
                         <span class="text-xs text-gray-400 mt-1">3546663318718739</span>
                     </button>
 
+                    <!-- 配置：社交卡片-抖音；短链接可替换成新的个人主页链接 -->
                     <button onclick="openModal('douyin', '@zeora315', 'https://v.douyin.com/3HxV4i3e-08/', 'fa-brands fa-tiktok', '#000000')"
                         class="group p-6 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-all flex flex-col items-center justify-center border border-transparent hover:border-gray-200">
                         <i class="fa-brands fa-tiktok text-3xl text-gray-400 group-hover:text-black mb-3 transition-colors"></i>
@@ -371,6 +293,7 @@
                         <span class="text-xs text-gray-400 mt-1">@zeora315</span>
                     </button>
 
+                    <!-- 配置：社交卡片-微博；改微博 UID 时同时改链接末尾数字 -->
                     <button onclick="openModal('weibo', 'Zeora315', 'https://weibo.com/u/7872044469', 'fa-brands fa-weibo', '#E6162D')"
                         class="group p-6 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-all flex flex-col items-center justify-center border border-transparent hover:border-gray-200">
                         <i class="fa-brands fa-weibo text-3xl text-gray-400 group-hover:text-[#E6162D] mb-3 transition-colors"></i>
@@ -384,14 +307,17 @@
         <div class="footer-capsule reveal-up">
             <div class="footer-capsule-inner">
                 <div class="footer-bottom">
+                    <!-- 配置：页脚像素文字；data-pixel-text 会被 script.js 读取并绘制成粒子文字 -->
                     <div class="footer-pixel-drift" data-pixel-text="ZEORA" aria-label="ZEORA pixel drift">
                         <canvas class="footer-pixel-canvas"></canvas>
                     </div>
                     <div class="footer-icp">
+                        <!-- 配置：备案链接 1；href 和显示文本分别控制跳转地址与页脚显示备案号 -->
                         <a href="https://icp.gov.moe/?keyword=20253156" target="_blank" rel="noopener noreferrer" class="hover:text-gray-600 transition-colors">
                             萌 ICP 备 20253156 号
                         </a>
                         <span class="footer-icp-divider">|</span>
+                        <!-- 配置：备案链接 2；这里是工信部备案跳转和显示文案 -->
                         <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" class="hover:text-gray-600 transition-colors">
                             苏 ICP 备 2026019501 号
                         </a>
@@ -400,8 +326,11 @@
             </div>
         </div>
     </footer>
+    </div>
 
-    <script src="script.js?v=12"></script>
+    <!-- 配置：主页脚本和缓存版本号；修改版本号可让浏览器重新加载 script.js -->
+    <script src="data.js?v=1"></script>
+    <script src="script.js?v=19"></script>
 
     <!-- 加载动画 -->
     <div id="loading-animation" class="fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-500" style="background: var(--bg-color);">
