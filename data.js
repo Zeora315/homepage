@@ -48,6 +48,57 @@ window.SITE_DATA = {
         }
     ],
 
+    // 配置：首页博客推荐；RSS 失败时使用 fallback，保证静态页仍然可用。
+    blogFeed: {
+        feedUrl: 'https://blog.zeora.top/atom.xml',
+        siteUrl: 'https://blog.zeora.top',
+        limit: 6,
+        fallback: [
+            {
+                title: '机器人已经卷到这种程度了？',
+                url: 'https://blog.zeora.top/posts/531c66a5/',
+                category: '科技',
+                published: '2026-08-26T12:00:00.000Z',
+                image: 'https://p.zeora.top/rsdld-cover-20260822-x1p8s.webp'
+            },
+            {
+                title: '台风名字的由来',
+                url: 'https://blog.zeora.top/posts/0/',
+                category: '知识科普',
+                published: '2026-07-12T00:00:00.000Z',
+                image: 'https://p.zeora.top/%E5%8F%B0%E9%A3%8E%E5%90%8D%E5%AD%97'
+            },
+            {
+                title: '支付宝AI深度实测：从查账单到打车',
+                url: 'https://blog.zeora.top/posts/8aaeb8d7/',
+                category: '软件推荐',
+                published: '2026-06-16T02:00:00.000Z',
+                image: 'https://p.zeora.top/AI%E6%94%AF%E4%BB%98%E5%AE%9D'
+            },
+            {
+                title: 'WWDC26：Siri彻底重构从语音助手到个人智能代理',
+                url: 'https://blog.zeora.top/posts/f26887eb/',
+                category: '经验分享',
+                published: '2026-06-10T13:25:13.142Z',
+                image: 'https://p.zeora.top/wwdc26'
+            },
+            {
+                title: 'ChatGPT Images 2.0：当AI学会"造假"之后，"眼见为实"正在失效',
+                url: 'https://blog.zeora.top/posts/40df77d4/',
+                category: '经验分享',
+                published: '2026-04-26T00:17:51.532Z',
+                image: 'https://p.zeora.top/blog-cover/Canvas-Ruom_z.webp'
+            },
+            {
+                title: 'Hexo 博客搭建教程',
+                url: 'https://blog.zeora.top/posts/70db7d7c/',
+                category: 'Hexo',
+                published: '2026-03-28T09:31:39.236Z',
+                image: 'https://p.zeora.top/blog-img/1774690328573.webp'
+            }
+        ]
+    },
+
     // 配置：赞助页内容；改这里即可，不用改 sponsor.html。
     sponsor: {
         intro: '赞助收入用于维持博客、开源项目与个人站点的持续更新。',
@@ -289,6 +340,198 @@ window.SITE_DATA = {
 
         // 卡片可能由 data.js 异步渲染完成，这里补一次初始化，确保箭头始终可用。
         setTimeout(renderSlider, 300);
+    }
+
+    // --- 首页博客推荐 ---
+    const blogCoverPalette = ['#8797a6', '#c7d8dc', '#d57b4f', '#6689a4', '#9b7c68', '#7c8b70'];
+
+    function normalizeBlogImage(url) {
+        if (!url) return '';
+        const value = String(url).trim();
+        if (value.startsWith('https://blog.zeora.top/https/')) return `https://${value.slice('https://blog.zeora.top/https/'.length)}`;
+        const candidate = value.startsWith('http://') ? `https://${value.slice(7)}` : value;
+        try {
+            const parsed = new URL(candidate, data.blogFeed.feedUrl);
+            return parsed.protocol === 'https:' ? parsed.href : '';
+        } catch (error) {
+            return '';
+        }
+    }
+
+    function normalizeBlogUrl(url) {
+        try {
+            const parsed = new URL(url || data.blogFeed.siteUrl, data.blogFeed.feedUrl);
+            return parsed.protocol === 'https:' ? parsed.href : data.blogFeed.siteUrl;
+        } catch (error) {
+            return data.blogFeed.siteUrl;
+        }
+    }
+
+    function extractFirstImage(markup) {
+        if (!markup) return '';
+        const match = String(markup).match(/<img[^>]+src=["']([^"']+)/i);
+        return normalizeBlogImage(match?.[1] || '');
+    }
+
+    function formatBlogDate(value) {
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return '';
+        return new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' }).format(date);
+    }
+
+    function readFeedEntry(entry) {
+        const linkElement = entry.querySelector('link[rel="alternate"]') || entry.querySelector('link[href]');
+        const summary = entry.querySelector('summary')?.textContent || '';
+        const content = entry.querySelector('content')?.textContent || '';
+        const category = entry.querySelector('category')?.getAttribute('term') || '博客';
+        return {
+            title: entry.querySelector('title')?.textContent?.trim() || '未命名文章',
+            url: normalizeBlogUrl(linkElement?.getAttribute('href')),
+            category,
+            published: entry.querySelector('published')?.textContent || entry.querySelector('updated')?.textContent || '',
+            image: extractFirstImage(summary) || extractFirstImage(content)
+        };
+    }
+
+    async function findArticleCover(url) {
+        if (!url) return '';
+        try {
+            const response = await fetch(url, { mode: 'cors' });
+            if (!response.ok) return '';
+            const markup = await response.text();
+            const documentNode = new DOMParser().parseFromString(markup, 'text/html');
+            const ogImage = documentNode.querySelector('meta[property="og:image"]')?.getAttribute('content');
+            return normalizeBlogImage(ogImage);
+        } catch (error) {
+            return '';
+        }
+    }
+
+    function createBlogCard(item, index) {
+        const image = normalizeBlogImage(item.image);
+        const category = item.category || '博客';
+        const fallback = blogCoverPalette[index % blogCoverPalette.length];
+        const card = document.createElement('a');
+        card.className = 'blog-card';
+        card.href = normalizeBlogUrl(item.url);
+        card.target = '_blank';
+        card.rel = 'noopener noreferrer';
+
+        const cover = document.createElement('div');
+        cover.className = 'blog-card-cover';
+        if (image) {
+            const coverImage = document.createElement('img');
+            coverImage.src = image;
+            coverImage.alt = item.title || '博客文章封面';
+            coverImage.loading = 'lazy';
+            coverImage.dataset.blogCover = 'true';
+            cover.append(coverImage);
+        } else {
+            cover.classList.add('blog-card-cover-fallback');
+            cover.style.setProperty('--blog-cover-color', fallback);
+            const label = document.createElement('span');
+            label.textContent = category;
+            cover.append(label);
+        }
+
+        const body = document.createElement('div');
+        body.className = 'blog-card-body';
+        const categoryElement = document.createElement('span');
+        categoryElement.className = 'blog-card-category';
+        categoryElement.textContent = category;
+        const titleElement = document.createElement('h3');
+        titleElement.textContent = item.title || '未命名文章';
+        const timeElement = document.createElement('time');
+        timeElement.dateTime = item.published || '';
+        timeElement.textContent = formatBlogDate(item.published) || '最近更新';
+        body.append(categoryElement, titleElement, timeElement);
+        card.append(cover, body);
+        return card;
+    }
+
+    function initBlogSlider(track) {
+        const section = document.querySelector('.blog-recommendations-section');
+        const previousButton = section?.querySelector('.blog-arrow-prev');
+        const nextButton = section?.querySelector('.blog-arrow-next');
+        const cards = [...track.querySelectorAll('.blog-card')];
+        if (cards.length === 0) return;
+
+        let activeIndex = 0;
+        function getVisibleCount() {
+            if (window.matchMedia('(max-width: 760px)').matches) return 1;
+            return 3;
+        }
+        function renderSlider() {
+            const visibleCount = getVisibleCount();
+            const maxIndex = Math.max(0, cards.length - visibleCount);
+            activeIndex = Math.max(0, Math.min(activeIndex, maxIndex));
+            const viewport = track.closest('.blog-recommendations-viewport');
+            const viewportWidth = viewport ? viewport.clientWidth : track.clientWidth;
+            const step = (viewportWidth + 18) / visibleCount;
+            track.style.transform = `translateX(${-activeIndex * step}px)`;
+            previousButton?.toggleAttribute('disabled', activeIndex === 0);
+            nextButton?.toggleAttribute('disabled', activeIndex >= maxIndex);
+        }
+        previousButton?.addEventListener('click', () => { activeIndex -= 1; renderSlider(); });
+        nextButton?.addEventListener('click', () => { activeIndex += 1; renderSlider(); });
+        window.addEventListener('resize', renderSlider, { passive: true });
+        window.addEventListener('load', renderSlider);
+        renderSlider();
+        setTimeout(renderSlider, 300);
+    }
+
+    function renderBlogRecommendations(items) {
+        const track = document.querySelector('.blog-recommendations-track');
+        if (!track) return;
+        track.replaceChildren(...items.map(createBlogCard));
+        track.querySelectorAll('[data-blog-cover]').forEach((image) => {
+            image.addEventListener('error', () => {
+                const cover = image.closest('.blog-card-cover');
+                if (!cover) return;
+                const card = image.closest('.blog-card');
+                const index = card ? [...track.querySelectorAll('.blog-card')].indexOf(card) : 0;
+                cover.classList.add('blog-card-cover-fallback');
+                cover.style.setProperty('--blog-cover-color', blogCoverPalette[Math.max(index, 0) % blogCoverPalette.length]);
+                cover.replaceChildren();
+                const label = document.createElement('span');
+                label.textContent = items[index]?.category || '博客';
+                cover.append(label);
+            }, { once: true });
+        });
+        initBlogSlider(track);
+    }
+
+    async function renderBlogFeed() {
+        const track = document.querySelector('.blog-recommendations-track');
+        if (!track || !data.blogFeed) return;
+        const fallback = (data.blogFeed.fallback || []).slice(0, data.blogFeed.limit || 6);
+        let items = fallback;
+        try {
+            const response = await fetch(data.blogFeed.feedUrl, { mode: 'cors' });
+            if (!response.ok) throw new Error(`Feed request failed: ${response.status}`);
+            const xml = new DOMParser().parseFromString(await response.text(), 'application/xml');
+            const parsed = [...xml.querySelectorAll('entry')]
+                .map(readFeedEntry)
+                .filter((item) => item.title && item.url)
+                .slice(0, data.blogFeed.limit || 6);
+            if (parsed.length) items = parsed;
+        } catch (error) {
+            // 静态站点可能遇到跨域限制，回退数据仍能保持区块可用。
+        }
+
+        renderBlogRecommendations(items);
+        const coverCandidates = items.filter((item) => item.url);
+        if (coverCandidates.length) {
+            const discovered = await Promise.all(coverCandidates.map((item) => findArticleCover(item.url)));
+            let changed = false;
+            coverCandidates.forEach((item, index) => {
+                if (discovered[index] && discovered[index] !== item.image) {
+                    item.image = discovered[index];
+                    changed = true;
+                }
+            });
+            if (changed) renderBlogRecommendations(items);
+        }
     }
 
     // --- 项目页列表 ---
@@ -633,6 +876,7 @@ window.SITE_DATA = {
 
     document.addEventListener('DOMContentLoaded', () => {
         renderRecommendations();
+        renderBlogFeed();
         renderProjects();
         renderSponsor();
         renderProductDetail();
