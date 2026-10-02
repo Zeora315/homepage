@@ -48,6 +48,66 @@ window.SITE_DATA = {
         }
     ],
 
+    // 配置：赞助页内容；改这里即可，不用改 sponsor.html。
+    sponsor: {
+        intro: '赞助收入用于维持博客、开源项目与个人站点的持续更新。',
+        usages: [                       // 配置：赞助去向卡片
+            {
+                icon: 'fa-solid fa-server',
+                title: '服务器与域名',
+                desc: '支付站点与服务的运行开销，保持长期在线。'
+            },
+            {
+                icon: 'fa-solid fa-code',
+                title: '开发与维护',
+                desc: '持续修复问题、更新功能、跟进新设备兼容。'
+            },
+        ],
+        methods: [                      // 配置：赞助方式；qr 填收款码图片地址，url / links 填外链，account 填可复制的账号
+            {
+                name: '支付宝',
+                icon: 'fa-brands fa-alipay',
+                color: '#1677ff',
+                qr: '',
+                account: '',
+                note: '扫码或搜索账号捐赠',
+                url: ''
+            },
+            {
+                name: '微信支付',
+                icon: 'fa-brands fa-weixin',
+                color: '#22c55e',
+                qr: '',
+                account: '',
+                note: '扫码捐赠',
+                url: ''
+            },
+            {
+                name: '爱发电',
+                icon: 'fa-solid fa-bolt',
+                color: '#ff5c8a',
+                qr: 'https://p.zeora.top/aifadianwebp',
+                account: '',
+                note: '在爱发电上持续支持',
+                url: '',
+                links: [                // 配置：额外跳转按钮，label 为按钮文字，url 为跳转地址
+                    {
+                        label: '爱发电主页',
+                        url: 'https://afdian.com/a/zeora?utm_source=copylink&utm_medium=link'
+                    }
+                ]
+            }
+        ],
+        sponsors: [                     // 配置：赞助名单；没有数据时自动显示占位文案
+            // {
+            //     name: '赞助者名称',
+            //     amount: '¥ 10',
+            //     date: '2026-09',
+            //     message: '感谢你的项目'
+            // }
+        ]
+    },
+
     // 配置：产品列表；复制一段对象即可新增一个产品。
     products: [
         {
@@ -251,6 +311,105 @@ window.SITE_DATA = {
         }).join('');
     }
 
+    // --- 赞助页 ---
+    function renderSponsor() {
+        const root = document.querySelector('.sponsor-section');
+        if (!root || !data.sponsor) return;
+
+        const config = data.sponsor;
+
+        const intro = root.querySelector('[data-sponsor-intro]');
+        if (intro) {
+            intro.textContent = config.intro || '';
+            intro.hidden = !config.intro;
+        }
+
+        const usageGrid = root.querySelector('.sponsor-usage-grid');
+        if (usageGrid) {
+            usageGrid.innerHTML = (config.usages || []).map((usage) => `
+                <article class="sponsor-usage">
+                    <i class="${escapeHtml(usage.icon || 'fa-solid fa-heart')}" aria-hidden="true"></i>
+                    <h3>${escapeHtml(usage.title || '')}</h3>
+                    <p>${escapeHtml(usage.desc || '')}</p>
+                </article>`).join('');
+            usageGrid.hidden = (config.usages || []).length === 0;
+        }
+
+        const methodGrid = root.querySelector('.sponsor-methods-grid');
+        if (methodGrid) {
+            methodGrid.innerHTML = (config.methods || []).map((method) => {
+                // 二维码可点击：优先跳 url，没有则跳 links 里的第一个地址。
+                const jumpUrl = method.url || (method.links || []).map((link) => link.url).find(Boolean) || '';
+                const qrImage = method.qr
+                    ? `<img src="${escapeHtml(method.qr)}" alt="${escapeHtml(method.name)}收款码" loading="lazy">`
+                    : `<span class="sponsor-qr-placeholder"><i class="fa-solid fa-qrcode" aria-hidden="true"></i>待上传收款码</span>`;
+                const qr = jumpUrl
+                    ? `<a class="sponsor-qr-link" href="${escapeHtml(jumpUrl)}" target="_blank" rel="noopener noreferrer" aria-label="打开${escapeHtml(method.name)}">${qrImage}</a>`
+                    : qrImage;
+
+                const mainLink = method.url
+                    ? `<a class="sponsor-action" href="${escapeHtml(method.url)}" target="_blank" rel="noopener noreferrer">前往 <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>`
+                    : '';
+
+                // links 可配置多个额外跳转按钮，label 为空时默认显示「前往」。
+                const extraLinks = (method.links || []).filter((link) => link.url).map((link) => `
+                    <a class="sponsor-action" href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(link.label || '前往')} <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>`).join('');
+
+                const copyAction = method.account
+                    ? `<button class="sponsor-action" type="button" data-copy="${escapeHtml(method.account)}">复制账号 <i class="fa-regular fa-copy" aria-hidden="true"></i></button>`
+                    : '';
+
+                return `
+                <article class="sponsor-method" style="--method-color: ${escapeHtml(method.color || '#0071e3')}">
+                    <div class="sponsor-method-head">
+                        <i class="${escapeHtml(method.icon || 'fa-solid fa-heart')}" aria-hidden="true"></i>
+                        <div>
+                            <h3>${escapeHtml(method.name || '赞助方式')}</h3>
+                            <p>${escapeHtml(method.note || '')}</p>
+                        </div>
+                    </div>
+                    <div class="sponsor-qr">${qr}</div>
+                    <div class="sponsor-method-actions">${mainLink}${extraLinks}${copyAction}</div>
+                </article>`;
+            }).join('');
+
+            methodGrid.addEventListener('click', (event) => {
+                const button = event.target.closest('[data-copy]');
+                if (!button) return;
+                const text = button.dataset.copy;
+                const done = () => {
+                    const original = button.dataset.label || button.innerHTML;
+                    button.dataset.label = original;
+                    button.innerHTML = '已复制 <i class="fa-solid fa-check" aria-hidden="true"></i>';
+                    setTimeout(() => { button.innerHTML = original; }, 1600);
+                };
+                if (navigator.clipboard?.writeText) {
+                    navigator.clipboard.writeText(text).then(done).catch(() => {});
+                }
+            });
+        }
+
+        const list = root.querySelector('.sponsor-list');
+        if (list) {
+            const sponsors = config.sponsors || [];
+            if (sponsors.length === 0) {
+                list.innerHTML = '<p class="sponsor-empty">还没有人赞助，成为第一个吧。</p>';
+            } else {
+                list.innerHTML = sponsors.map((item) => `
+                    <div class="sponsor-row">
+                        <div class="sponsor-row-main">
+                            <span class="sponsor-name">${escapeHtml(item.name || '匿名')}</span>
+                            <span class="sponsor-amount">${escapeHtml(item.amount || '')}</span>
+                        </div>
+                        <div class="sponsor-row-sub">
+                            <span class="sponsor-date">${escapeHtml(item.date || '')}</span>
+                            <p class="sponsor-message">${escapeHtml(item.message || '')}</p>
+                        </div>
+                    </div>`).join('');
+            }
+        }
+    }
+
     // --- 产品详情页 ---
     function renderProductDetail() {
         const section = document.querySelector('.app-detail-section');
@@ -437,6 +596,7 @@ window.SITE_DATA = {
     document.addEventListener('DOMContentLoaded', () => {
         renderRecommendations();
         renderProjects();
+        renderSponsor();
         renderProductDetail();
     });
 })();

@@ -3,16 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zeora | 项目详情</title>
+    <title>Zeora | Sponsor</title>
     <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap-grid.min.css" rel="stylesheet">
     <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.bootcdn.net/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css?v=34">
 </head>
-<!-- 配置：产品详情页主题色。
-     --app-theme：图标主色，决定顶部渐变、下载按钮颜色，请跟软件图标配色保持一致；
-     后续为每个产品复制本页时，只需要改这里的颜色变量即可。 -->
-<body class="antialiased app-detail-page" style="--app-theme: #3aa76d;">
+<body class="antialiased sponsor-page">
     <nav class="navbar show">
         <div class="navbar-container">
             <button class="navbar-item nav-menu-toggle" id="nav-menu-toggle" type="button" aria-label="打开菜单" aria-controls="nav-section-menu" aria-expanded="false">
@@ -46,72 +43,32 @@
         </div>
     </div>
 
-    <main class="app-detail-main">
-        <section class="app-detail-section" aria-labelledby="app-detail-name">
-            <div class="app-detail-header">
-                <!-- 配置：产品图标；图片请与 --app-theme 主题色匹配 -->
-                <img class="app-detail-icon" src="http://p.zeora.top/logo" alt="产品图标">
-                <div class="app-detail-title">
-                    <!-- 配置：产品类型；可选：网站 / 快应用 / 应用 / 工具 等 -->
-                    <p class="app-detail-type">快应用</p>
-                    <!-- 配置：产品名称 -->
-                    <h1 id="app-detail-name">麻将</h1>
-                </div>
+    <main class="sponsor-main">
+        <section id="sponsor" class="sponsor-section reveal-up active" aria-labelledby="sponsor-title">
+            <!-- 标题栏：与网站 / 项目页保持统一，文案与渐变色可单独配置 -->
+            <div class="projects-heading-block">
+                <p class="projects-kicker">Zeora / Sponsor</p>
+                <h1 id="sponsor-title">赞助</h1>
+                <p>如果这些项目和站点帮到了你，可以请我喝杯咖啡。</p>
             </div>
 
-            <a class="app-download-btn" href="#" aria-label="下载">
-                <i class="fa-solid fa-circle-down" aria-hidden="true"></i>
-                <span>下载</span>
-            </a>
+            <!-- 赞助说明 / 赞助去向 / 赞助方式 / 赞助名单，全部由 data.js 的 sponsor 生成 -->
+            <p class="sponsor-intro" data-sponsor-intro></p>
+            <div class="sponsor-usage-grid"></div>
 
-            <!-- 应用截图由 data.js 的 screenshots 自动生成，横向滑动查看 -->
-            <div class="app-shots" hidden></div>
+            <h2 class="sponsor-block-title">赞助方式</h2>
+            <div class="sponsor-methods-grid"></div>
 
-            <div class="app-links-block" hidden>
-                <h2>相关链接</h2>
-                <!-- 相关链接由 data.js 的 links 自动生成 -->
-                <div class="app-links-list"></div>
-            </div>
-
-            <div class="app-changelog-block" hidden>
-                <h2>更新日志</h2>
-                <!-- 更新日志由 data.js 的 changelog 自动生成 -->
-                <div class="app-changelog-list" hidden></div>
-            </div>
+            <h2 class="sponsor-block-title">赞助名单</h2>
+            <div class="sponsor-list"></div>
         </section>
     </main>
 
-    <!-- 下载弹窗：先选系统 / 设备，再选下载来源；内容由 data.js 的 downloadOptions 生成 -->
-    <div class="download-modal" id="download-modal" hidden>
-        <div class="download-modal-backdrop" data-download-close></div>
-        <div class="download-sheet" role="dialog" aria-modal="true" aria-labelledby="download-modal-title">
-            <div class="download-sheet-head">
-                <h2 id="download-modal-title">选择下载方式</h2>
-                <button class="download-close" type="button" aria-label="关闭下载弹窗" data-download-close>
-                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-                </button>
-            </div>
-
-            <div class="download-pane download-pane-system">
-                <p class="download-pane-tip">请选择系统 / 设备</p>
-                <div class="download-system-list"></div>
-            </div>
-
-            <div class="download-pane download-pane-source" hidden>
-                <button class="download-back" type="button">
-                    <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
-                    <span>返回</span>
-                </button>
-                <p class="download-source-title"></p>
-                <div class="download-source-list"></div>
-            </div>
-        </div>
-    </div>
-
-    <footer id="social" class="footer-root">
+    <footer class="footer-root">
         <div class="footer-capsule reveal-up">
             <div class="footer-capsule-inner">
                 <div class="footer-bottom">
+                    <!-- 配置：页脚像素文字；data-pixel-text 会被 script.js 读取并绘制成粒子文字 -->
                     <div class="footer-pixel-drift" data-pixel-text="ZEORA" aria-label="ZEORA pixel drift">
                         <canvas class="footer-pixel-canvas"></canvas>
                     </div>

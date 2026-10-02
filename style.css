@@ -803,9 +803,10 @@ body.hero-ready .hero-profile-subtitle {
     line-height: 1.08;
 }
 
-/* 兜底统一：无论标题是否带其他类，网站 / 项目页主标题尺寸保持一致 */
+/* 兜底统一：无论标题是否带其他类，网站 / 项目 / 赞助页主标题尺寸保持一致 */
 #services-title,
-#projects-title {
+#projects-title,
+#sponsor-title {
     font-size: clamp(36px, 5vw, 58px);
     font-weight: 850;
     letter-spacing: -0.05em;
@@ -4407,4 +4408,287 @@ body:has(.music-section) .navbar-item { color: var(--text-primary); }
               0 0 25px rgb(0,140,255),
               0 0 50px rgb(0,140,255),
               0 0 100px rgb(0,140,255);
+}
+
+/* =========================================
+   赞助页 (Sponsor)
+========================================= */
+/* 顶部渐变：与网站 / 项目页同一套做法，两侧有色、中间留白、向下淡出为网格 */
+.sponsor-page {
+    background-color: var(--bg-color);
+    background-repeat: no-repeat, no-repeat, no-repeat, repeat, repeat;
+    background-position: top, top, top, 0 0, 0 0;
+    background-size: 100% 420px, 100% 420px, 100% 420px, 50px 50px, 50px 50px;
+    background-image:
+        radial-gradient(ellipse 48% 360px at 0% 0%, rgba(244, 63, 94, 0.16), transparent 72%),
+        radial-gradient(ellipse 48% 360px at 100% 0%, rgba(251, 191, 36, 0.28), transparent 72%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0%, rgba(255, 255, 255, 0.86) 34%, transparent 70%),
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+}
+
+[data-theme="dark"] .sponsor-page {
+    background-image:
+        radial-gradient(ellipse 48% 360px at 0% 0%, rgba(244, 63, 94, 0.22), transparent 72%),
+        radial-gradient(ellipse 48% 360px at 100% 0%, rgba(251, 191, 36, 0.14), transparent 72%),
+        linear-gradient(180deg, rgba(13, 13, 15, 0.2) 0%, rgba(13, 13, 15, 0.08) 34%, transparent 70%),
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+}
+
+.sponsor-main {
+    width: min(1100px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 132px 0 92px;
+}
+
+.sponsor-section { scroll-margin-top: 130px; }
+
+.sponsor-intro {
+    max-width: 720px;
+    margin: 0 auto 40px;
+    color: var(--text-secondary);
+    font-size: 16px;
+    line-height: 1.7;
+    text-align: center;
+}
+
+.sponsor-intro[hidden] { display: none; }
+
+.sponsor-block-title {
+    margin: clamp(44px, 6vw, 66px) 0 20px;
+    color: var(--text-primary);
+    font-size: 22px;
+    font-weight: 850;
+    letter-spacing: -0.02em;
+    text-align: center;
+}
+
+/* 赞助去向 */
+.sponsor-usage-grid,
+.sponsor-methods-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(14px, 2vw, 22px);
+}
+
+.sponsor-usage,
+.sponsor-method {
+    border: 1px solid var(--card-border);
+    border-radius: 22px;
+    background: var(--card-bg);
+    box-shadow: 0 16px 42px var(--card-shadow);
+}
+
+.sponsor-usage { padding: 22px; }
+
+.sponsor-usage-grid[hidden] { display: none; }
+
+.sponsor-usage > i {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 13px;
+    background: rgba(244, 63, 94, 0.12);
+    color: #f43f5e;
+    font-size: 20px;
+}
+
+.sponsor-usage h3 {
+    margin: 14px 0 6px;
+    color: var(--text-primary);
+    font-size: 18px;
+    font-weight: 850;
+    letter-spacing: -0.02em;
+}
+
+.sponsor-usage p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* 赞助方式 */
+.sponsor-method {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 18px;
+    transition: border-color 220ms ease, box-shadow 220ms ease;
+}
+
+.sponsor-method:hover {
+    border-color: color-mix(in srgb, var(--method-color) 55%, var(--card-border));
+    box-shadow: 0 20px 52px var(--card-hover-shadow);
+}
+
+.sponsor-method-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sponsor-method-head > i {
+    display: grid;
+    place-items: center;
+    flex: 0 0 42px;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--method-color) 16%, transparent);
+    color: var(--method-color);
+    font-size: 19px;
+}
+
+.sponsor-method-head h3 {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 18px;
+    font-weight: 850;
+    letter-spacing: -0.02em;
+}
+
+.sponsor-method-head p {
+    margin: 4px 0 0;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.sponsor-qr {
+    display: grid;
+    aspect-ratio: 1;
+    place-items: center;
+    overflow: hidden;
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.55);
+}
+
+[data-theme="dark"] .sponsor-qr { background: rgba(255, 255, 255, 0.05); }
+
+.sponsor-qr img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* 收款码带跳转地址时整块可点击 */
+.sponsor-qr-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+    transition: transform 240ms ease;
+}
+
+.sponsor-qr-link:hover,
+.sponsor-qr-link:focus-visible { transform: scale(1.02); }
+
+.sponsor-qr-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.sponsor-qr-placeholder i { font-size: 40px; opacity: 0.5; }
+
+.sponsor-method-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.sponsor-method-actions:empty { display: none; }
+
+.sponsor-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 16px;
+    border: 1.5px solid var(--card-border);
+    border-radius: 999px;
+    background: var(--card-bg);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 180ms ease, border-color 180ms ease, color 180ms ease;
+}
+
+.sponsor-action i { color: currentColor; }
+
+.sponsor-action:hover,
+.sponsor-action:focus-visible {
+    border-color: var(--method-color);
+    background: var(--method-color);
+    color: #fff;
+}
+
+/* 赞助名单 */
+.sponsor-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sponsor-row {
+    padding: 15px 18px;
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+    background: var(--card-bg);
+    box-shadow: 0 8px 22px var(--card-shadow);
+}
+
+.sponsor-row-main,
+.sponsor-row-sub {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.sponsor-row-sub { margin-top: 6px; }
+
+.sponsor-name { color: var(--text-primary); font-size: 15px; font-weight: 800; }
+.sponsor-amount { color: var(--text-primary); font-size: 14px; font-weight: 800; }
+.sponsor-date { color: var(--text-secondary); font-size: 12px; font-weight: 700; }
+
+.sponsor-message {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1.6;
+    text-align: right;
+}
+
+.sponsor-empty {
+    margin: 0;
+    padding: 26px;
+    border: 1px dashed var(--card-border);
+    border-radius: 18px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    text-align: center;
+}
+
+@media (max-width: 860px) {
+    .sponsor-usage-grid,
+    .sponsor-methods-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 640px) {
+    .sponsor-main { padding-top: 120px; }
+    .sponsor-usage-grid,
+    .sponsor-methods-grid { grid-template-columns: 1fr; }
+    .sponsor-qr { width: 100%; max-width: 280px; margin: 0 auto; }
+    .sponsor-row-sub { flex-direction: column; align-items: flex-start; }
+    .sponsor-message { text-align: left; }
 }
