@@ -291,23 +291,61 @@ window.SITE_DATA = {
         setTimeout(renderSlider, 300);
     }
 
-    // --- 项目页卡片 ---
+    // --- 项目页列表 ---
     function renderProjects() {
         const grid = document.querySelector('.projects-grid');
         if (!grid || !Array.isArray(data.products)) return;
 
-        grid.innerHTML = data.products.map((product, index) => {
-            const number = String(index + 1).padStart(2, '0');
-            const detailUrl = `project-detail.html?p=${encodeURIComponent(product.id || number)}`;
+        const typeDescriptions = {
+            '网站': '持续维护、面向日常使用的站点服务',
+            '快应用': '适配设备的轻量应用与实验作品',
+            '软件': '用于工作、创作和生活的实用软件',
+            '工具': '持续打磨的工具与开源项目'
+        };
+
+        const grouped = data.products.reduce((groups, product) => {
+            const type = String(product.type || '其他');
+            if (!groups[type]) groups[type] = [];
+            groups[type].push(product);
+            return groups;
+        }, {});
+
+        grid.innerHTML = Object.entries(grouped).map(([type, products]) => {
+            const groupId = `project-group-${type.replace(/[^a-zA-Z0-9\u4e00-\u9fff]+/g, '-')}`;
+            const description = typeDescriptions[type] || '正在构建、维护和持续打磨的作品';
+            const items = products.map((product, index) => {
+                const number = String(index + 1).padStart(2, '0');
+                const detailUrl = `project-detail.html?p=${encodeURIComponent(product.id || `${type}-${number}`)}`;
+                const actionLabel = product.actionLabel || (type === '网站' ? '访问' : '获取');
+                const icon = product.icon
+                    ? `<img class="project-list-icon" src="${escapeHtml(product.icon)}" alt="${escapeHtml(product.name || '项目')}图标" loading="lazy">`
+                    : `<span class="project-list-icon project-list-icon-placeholder" aria-hidden="true"><i class="fa-solid fa-cube"></i></span>`;
+                const badge = product.badge
+                    ? `<span class="project-list-badge">${escapeHtml(product.badge)}</span>`
+                    : '';
+
+                return `
+                    <article class="project-list-item">
+                        <a class="project-list-icon-link" href="${detailUrl}" aria-label="打开${escapeHtml(product.name || '项目')}详情">${icon}</a>
+                        <div class="project-list-copy">
+                            <div class="project-list-title-row">
+                                <h3>${escapeHtml(product.name || '项目名称')}</h3>
+                                ${badge}
+                            </div>
+                            <p>${escapeHtml(product.summary || '这里填写项目的简单介绍和主要特色。')}</p>
+                            <a class="project-list-action" href="${detailUrl}" aria-label="${escapeHtml(actionLabel)}${escapeHtml(product.name || '项目')}">${escapeHtml(actionLabel)} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                        </div>
+                    </article>`;
+            }).join('');
+
             return `
-                <article class="project-card">
-                    <div class="project-cover" style="${backgroundStyle(product.cover)}"><span>${product.cover ? '' : `封面图 ${number}`}</span></div>
-                    <div class="project-card-body">
-                        <h2>${escapeHtml(product.name || '项目名称')}</h2>
-                        <p>${escapeHtml(product.summary || '这里填写项目的简单介绍和主要特色。')}</p>
+                <section class="project-group" aria-labelledby="${groupId}">
+                    <div class="project-group-heading">
+                        <h2 id="${groupId}">${escapeHtml(type)}</h2>
+                        <p>${escapeHtml(description)}</p>
                     </div>
-                    <a href="${detailUrl}" aria-label="了解${escapeHtml(product.name || '项目')}">了解更多 <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
-                </article>`;
+                    <div class="project-group-items">${items}</div>
+                </section>`;
         }).join('');
     }
 
