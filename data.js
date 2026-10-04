@@ -48,6 +48,60 @@ window.SITE_DATA = {
         }
     ],
 
+    // 配置：首页博客推荐；autoFetch 为 false 时只用下面的 fallback，不发任何跨域请求。
+    blogFeed: {
+        feedUrl: 'https://blog.zeora.top/atom.xml',
+        siteUrl: 'https://blog.zeora.top',
+        limit: 6,
+        // 配置：是否在线拉取 RSS；false = 纯手动模式（推荐，博客未开放 CORS 时不会有报错），
+        // 博客服务器放行跨域后可改成 true，自动读取最新文章。
+        autoFetch: false,
+        fallback: [
+            {
+                title: '机器人已经卷到这种程度了？',
+                url: 'https://blog.zeora.top/posts/531c66a5/',
+                category: '科技',
+                published: '2026-08-26T12:00:00.000Z',
+                image: 'https://p.zeora.top/rsdld-cover-20260822-x1p8s.webp'
+            },
+            {
+                title: '台风名字的由来',
+                url: 'https://blog.zeora.top/posts/0/',
+                category: '知识科普',
+                published: '2026-07-12T00:00:00.000Z',
+                image: 'https://p.zeora.top/%E5%8F%B0%E9%A3%8E%E5%90%8D%E5%AD%97'
+            },
+            {
+                title: '支付宝AI深度实测：从查账单到打车',
+                url: 'https://blog.zeora.top/posts/8aaeb8d7/',
+                category: '软件推荐',
+                published: '2026-06-16T02:00:00.000Z',
+                image: 'https://p.zeora.top/AI%E6%94%AF%E4%BB%98%E5%AE%9D'
+            },
+            {
+                title: 'WWDC26：Siri彻底重构从语音助手到个人智能代理',
+                url: 'https://blog.zeora.top/posts/f26887eb/',
+                category: '经验分享',
+                published: '2026-06-10T13:25:13.142Z',
+                image: 'https://p.zeora.top/wwdc26'
+            },
+            {
+                title: 'ChatGPT Images 2.0：当AI学会"造假"之后，"眼见为实"正在失效',
+                url: 'https://blog.zeora.top/posts/40df77d4/',
+                category: '经验分享',
+                published: '2026-04-26T00:17:51.532Z',
+                image: 'https://p.zeora.top/blog-cover/Canvas-Ruom_z.webp'
+            },
+            {
+                title: 'Hexo 博客搭建教程',
+                url: 'https://blog.zeora.top/posts/70db7d7c/',
+                category: 'Hexo',
+                published: '2026-03-28T09:31:39.236Z',
+                image: 'https://p.zeora.top/blog-img/1774690328573.webp'
+            }
+        ]
+    },
+
     // 配置：赞助页内容；改这里即可，不用改 sponsor.html。
     sponsor: {
         intro: '赞助收入用于维持博客、开源项目与个人站点的持续更新。',
@@ -291,6 +345,169 @@ window.SITE_DATA = {
         setTimeout(renderSlider, 300);
     }
 
+    // --- 首页博客推荐 ---
+    const blogCoverPalette = ['#8797a6', '#c7d8dc', '#d57b4f', '#6689a4', '#9b7c68', '#7c8b70'];
+
+    function normalizeBlogImage(url) {
+        if (!url) return '';
+        const value = String(url).trim();
+        if (value.startsWith('https://blog.zeora.top/https/')) return `https://${value.slice('https://blog.zeora.top/https/'.length)}`;
+        return value.startsWith('http://') ? `https://${value.slice(7)}` : value;
+    }
+
+    function extractFirstImage(markup) {
+        if (!markup) return '';
+        const match = String(markup).match(/<img[^>]+src=["']([^"']+)/i);
+        return normalizeBlogImage(match?.[1] || '');
+    }
+
+    function formatBlogDate(value) {
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return '';
+        return new Intl.DateTimeFormat('zh-CN', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        }).format(date);
+    }
+
+    function readFeedEntry(entry) {
+        const linkElement = entry.querySelector('link[rel="alternate"]') || entry.querySelector('link[href]');
+        const summary = entry.querySelector('summary')?.textContent || '';
+        const content = entry.querySelector('content')?.textContent || '';
+        const category = entry.querySelector('category')?.getAttribute('term') || '博客';
+        return {
+            title: entry.querySelector('title')?.textContent?.trim() || '未命名文章',
+            url: linkElement?.getAttribute('href') || data.blogFeed.siteUrl,
+            category,
+            published: entry.querySelector('published')?.textContent || entry.querySelector('updated')?.textContent || '',
+            image: extractFirstImage(summary) || extractFirstImage(content)
+        };
+    }
+
+    async function findArticleCover(url) {
+        if (!url) return '';
+        try {
+            const response = await fetch(url, { mode: 'cors' });
+            if (!response.ok) return '';
+            const markup = await response.text();
+            const documentNode = new DOMParser().parseFromString(markup, 'text/html');
+            const ogImage = documentNode.querySelector('meta[property="og:image"]')?.getAttribute('content');
+            return normalizeBlogImage(ogImage) || extractFirstImage(markup);
+        } catch (error) {
+            return '';
+        }
+    }
+
+    function blogCardMarkup(item, index) {
+        const image = normalizeBlogImage(item.image);
+        const category = item.category || '博客';
+        const fallback = blogCoverPalette[index % blogCoverPalette.length];
+        const cover = image
+            ? `<div class="blog-card-cover"><img src="${escapeHtml(image)}" alt="${escapeHtml(item.title)}" loading="lazy" data-blog-cover></div>`
+            : `<div class="blog-card-cover blog-card-cover-fallback" style="--blog-cover-color: ${fallback};"><span>${escapeHtml(category)}</span></div>`;
+
+        return `
+            <a class="blog-card" href="${escapeHtml(item.url || data.blogFeed.siteUrl)}" target="_blank" rel="noopener noreferrer">
+                ${cover}
+                <div class="blog-card-body">
+                    <span class="blog-card-category">${escapeHtml(category)}</span>
+                    <h3>${escapeHtml(item.title || '未命名文章')}</h3>
+                    <time datetime="${escapeHtml(item.published || '')}">${escapeHtml(formatBlogDate(item.published) || '最近更新')}</time>
+                </div>
+            </a>`;
+    }
+
+    function initBlogSlider(track) {
+        const section = document.querySelector('.blog-recommendations-section');
+        const previousButton = section?.querySelector('.blog-arrow-prev');
+        const nextButton = section?.querySelector('.blog-arrow-next');
+        const cards = [...track.querySelectorAll('.blog-card')];
+        if (cards.length === 0) return;
+
+        let activeIndex = 0;
+        function getVisibleCount() {
+            if (window.matchMedia('(max-width: 760px)').matches) return 1;
+            return 3;
+        }
+        function renderSlider() {
+            const visibleCount = getVisibleCount();
+            const maxIndex = Math.max(0, cards.length - visibleCount);
+            activeIndex = Math.max(0, Math.min(activeIndex, maxIndex));
+            const viewport = track.closest('.blog-recommendations-viewport');
+            const viewportWidth = viewport ? viewport.clientWidth : track.clientWidth;
+            const gap = 18;
+            const step = (viewportWidth + gap) / visibleCount;
+            track.style.transform = `translateX(${-activeIndex * step}px)`;
+            previousButton?.toggleAttribute('disabled', activeIndex === 0);
+            nextButton?.toggleAttribute('disabled', activeIndex >= maxIndex);
+        }
+        previousButton?.addEventListener('click', () => { activeIndex -= 1; renderSlider(); });
+        nextButton?.addEventListener('click', () => { activeIndex += 1; renderSlider(); });
+        window.addEventListener('resize', renderSlider, { passive: true });
+        window.addEventListener('load', renderSlider);
+        renderSlider();
+        setTimeout(renderSlider, 300);
+    }
+
+    function renderBlogRecommendations(items) {
+        const track = document.querySelector('.blog-recommendations-track');
+        if (!track) return;
+        track.innerHTML = items.map(blogCardMarkup).join('');
+        track.querySelectorAll('[data-blog-cover]').forEach((image) => {
+            image.addEventListener('error', () => {
+                const cover = image.closest('.blog-card-cover');
+                if (!cover) return;
+                const card = image.closest('.blog-card');
+                const index = card ? [...track.querySelectorAll('.blog-card')].indexOf(card) : 0;
+                cover.classList.add('blog-card-cover-fallback');
+                cover.style.setProperty('--blog-cover-color', blogCoverPalette[Math.max(index, 0) % blogCoverPalette.length]);
+                cover.innerHTML = `<span>${escapeHtml(items[index]?.category || '博客')}</span>`;
+            }, { once: true });
+        });
+        initBlogSlider(track);
+    }
+
+    async function renderBlogFeed() {
+        const track = document.querySelector('.blog-recommendations-track');
+        if (!track || !data.blogFeed) return;
+        const fallback = (data.blogFeed.fallback || []).slice(0, data.blogFeed.limit || 6);
+
+        // 手动模式：直接用 fallback，不请求 RSS、不抓封面，避免跨域报错。
+        if (data.blogFeed.autoFetch === false) {
+            renderBlogRecommendations(fallback);
+            return;
+        }
+
+        let items = fallback;
+        try {
+            const response = await fetch(data.blogFeed.feedUrl, { mode: 'cors' });
+            if (!response.ok) throw new Error(`Feed request failed: ${response.status}`);
+            const xml = new DOMParser().parseFromString(await response.text(), 'application/xml');
+            const parsed = [...xml.querySelectorAll('entry')]
+                .map(readFeedEntry)
+                .filter((item) => item.title && item.url)
+                .slice(0, data.blogFeed.limit || 6);
+            if (parsed.length) items = parsed;
+        } catch (error) {
+            // 静态站点可能遇到跨域限制，回退数据仍能保持区块可用。
+        }
+
+        renderBlogRecommendations(items);
+        const coverCandidates = items.filter((item) => item.url);
+        if (coverCandidates.length) {
+            const discovered = await Promise.all(coverCandidates.map((item) => findArticleCover(item.url)));
+            let changed = false;
+            coverCandidates.forEach((item, index) => {
+                if (discovered[index] && discovered[index] !== item.image) {
+                    item.image = discovered[index];
+                    changed = true;
+                }
+            });
+            if (changed) renderBlogRecommendations(items);
+        }
+    }
+
     // --- 项目页列表 ---
     function renderProjects() {
         const grid = document.querySelector('.projects-grid');
@@ -448,6 +665,40 @@ window.SITE_DATA = {
         }
     }
 
+    // 详情页就绪闸门：图标加载完成（或失败）且名称已写入后，加载层才会消失。
+    function registerDetailReadyGate(section) {
+        window.__pageLoaderGates = window.__pageLoaderGates || [];
+
+        window.__pageLoaderGates.push(() => new Promise((resolve) => {
+            const icon = section.querySelector('.app-detail-icon');
+            const name = section.querySelector('#app-detail-name');
+            let settled = false;
+
+            const finish = () => {
+                if (settled) return;
+                settled = true;
+                resolve();
+            };
+
+            if (!name || !name.textContent.trim()) {
+                finish();
+                return;
+            }
+
+            const source = icon?.getAttribute('src');
+            if (!source || (icon.complete && icon.naturalWidth > 0)) {
+                finish();
+                return;
+            }
+
+            const probe = new Image();
+            probe.onload = finish;
+            probe.onerror = finish;
+            probe.src = source;
+            setTimeout(finish, 3000); // 兜底：图标再慢也最多等 3 秒
+        }));
+    }
+
     // --- 产品详情页 ---
     function renderProductDetail() {
         const section = document.querySelector('.app-detail-section');
@@ -468,6 +719,9 @@ window.SITE_DATA = {
 
         const name = section.querySelector('#app-detail-name');
         if (name) name.textContent = product.name || '';
+
+        // 图标和名称都对上之后再放行加载层，避免先闪出默认头像和默认名称
+        registerDetailReadyGate(section);
 
         const downloadButton = section.querySelector('.app-download-btn');
         if (downloadButton) {
@@ -633,6 +887,7 @@ window.SITE_DATA = {
 
     document.addEventListener('DOMContentLoaded', () => {
         renderRecommendations();
+        renderBlogFeed();
         renderProjects();
         renderSponsor();
         renderProductDetail();

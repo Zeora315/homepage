@@ -11,7 +11,7 @@
     <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.bootcdn.net/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <!-- 配置：主样式文件和缓存版本号；修改版本号可强制浏览器重新加载 style.css -->
-    <link rel="stylesheet" href="style.css?v=34">
+    <link rel="stylesheet" href="style.css?v=36">
 </head>
 <body class="antialiased">
 
@@ -165,6 +165,27 @@
                 <div class="recommendations-controls" aria-label="推荐内容切换">
                     <button class="recommendation-arrow recommendation-arrow-prev" type="button" aria-label="上一个推荐"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
                     <button class="recommendation-arrow recommendation-arrow-next" type="button" aria-label="下一个推荐"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 博客推荐：从 Atom RSS 自动读取最新文章，封面优先使用正文首图。 -->
+        <section id="blog" class="blog-recommendations-section reveal-up" aria-labelledby="blog-title">
+            <div class="container mx-auto px-4" style="max-width: 1100px;">
+                <div class="blog-heading">
+                    <div class="blog-heading-copy">
+                        <h2 id="blog-title">最新的文章和动态</h2>
+                        <a class="blog-source-link" href="https://blog.zeora.top" target="_blank" rel="noopener noreferrer">来自博客 <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+                    </div>
+                </div>
+                <div class="blog-recommendations-viewport">
+                    <div class="blog-recommendations-track" aria-live="polite">
+                        <div class="blog-feed-state">正在加载文章…</div>
+                    </div>
+                </div>
+                <div class="blog-recommendations-controls" aria-label="博客文章切换">
+                    <button class="blog-arrow blog-arrow-prev" type="button" aria-label="上一篇文章"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
+                    <button class="blog-arrow blog-arrow-next" type="button" aria-label="下一篇文章"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
                 </div>
             </div>
         </section>
@@ -330,8 +351,8 @@
     </div>
 
     <!-- 配置：主页脚本和缓存版本号；修改版本号可让浏览器重新加载 script.js -->
-    <script src="data.js?v=1"></script>
-    <script src="script.js?v=19"></script>
+    <script src="data.js?v=5"></script>
+    <script src="script.js?v=20"></script>
 
     <!-- 加载动画 -->
     <div id="loading-animation" class="fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-500" style="background: var(--bg-color);">

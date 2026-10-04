@@ -7,9 +7,29 @@
     <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap-grid.min.css" rel="stylesheet">
     <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.bootcdn.net/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=34">
+    <link rel="stylesheet" href="style.css?v=36">
 </head>
 <body class="antialiased sponsor-page">
+    <!-- 加载动画：与首页一致，页面就绪后由 script.js 释放 -->
+    <div id="loading-animation" class="fixed inset-0 flex items-center justify-center transition-opacity duration-500" style="z-index: 9999; background: var(--bg-color);">
+        <div class="loader">
+            <svg width="100" height="100" viewBox="0 0 100 100">
+                <defs>
+                    <mask id="clipping">
+                        <polygon points="0,0 100,0 100,100 0,100" fill="black"></polygon>
+                        <polygon points="25,25 75,25 50,75" fill="white"></polygon>
+                        <polygon points="50,25 75,75 25,75" fill="white"></polygon>
+                        <polygon points="35,35 65,35 50,65" fill="white"></polygon>
+                        <polygon points="35,35 65,35 50,65" fill="white"></polygon>
+                        <polygon points="35,35 65,35 50,65" fill="white"></polygon>
+                        <polygon points="35,35 65,35 50,65" fill="white"></polygon>
+                    </mask>
+                </defs>
+            </svg>
+            <div class="box"></div>
+        </div>
+    </div>
+
     <nav class="navbar show">
         <div class="navbar-container">
             <button class="navbar-item nav-menu-toggle" id="nav-menu-toggle" type="button" aria-label="打开菜单" aria-controls="nav-section-menu" aria-expanded="false">
@@ -81,7 +101,7 @@
             </div>
         </div>
     </footer>
-    <script src="data.js?v=1"></script>
-    <script src="script.js?v=19"></script>
+    <script src="data.js?v=5"></script>
+    <script src="script.js?v=20"></script>
 </body>
 </html>
