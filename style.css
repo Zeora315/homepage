@@ -1538,11 +1538,12 @@ body.download-modal-open { overflow: hidden; }
     gap: 48px 70px;
 }
 
+/* 图标放在条目顶部，名称和说明在下方，不再排在文字旁边 */
 .project-list-item {
-    display: grid;
-    grid-template-columns: 112px minmax(0, 1fr);
-    align-items: center;
-    gap: 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
     min-width: 0;
 }
 
@@ -1664,7 +1665,7 @@ body.download-modal-open { overflow: hidden; }
 @media (max-width: 640px) {
     .project-group-heading { margin-bottom: 22px; }
     .project-group-items { grid-template-columns: 1fr; gap: 34px; }
-    .project-list-item { grid-template-columns: 88px minmax(0, 1fr); gap: 16px; }
+    .project-list-item { gap: 12px; }
     .project-list-icon-link { width: 88px; height: 88px; border-radius: 22px; }
     .project-list-title-row h3 { font-size: 21px; }
     .project-list-copy > p { font-size: 14px; }
