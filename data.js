@@ -48,11 +48,14 @@ window.SITE_DATA = {
         }
     ],
 
-    // 配置：首页博客推荐；RSS 失败时使用 fallback，保证静态页仍然可用。
+    // 配置：首页博客推荐；autoFetch 为 false 时只用下面的 fallback，不发任何跨域请求。
     blogFeed: {
         feedUrl: 'https://blog.zeora.top/atom.xml',
         siteUrl: 'https://blog.zeora.top',
         limit: 6,
+        // 配置：是否在线拉取 RSS；false = 纯手动模式（推荐，博客未开放 CORS 时不会有报错），
+        // 博客服务器放行跨域后可改成 true，自动读取最新文章。
+        autoFetch: false,
         fallback: [
             {
                 title: '机器人已经卷到这种程度了？',
@@ -376,7 +379,11 @@ window.SITE_DATA = {
     function formatBlogDate(value) {
         const date = new Date(value);
         if (Number.isNaN(date.getTime())) return '';
-        return new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' }).format(date);
+        return new Intl.DateTimeFormat('zh-CN', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        }).format(date);
     }
 
     function readFeedEntry(entry) {
@@ -467,7 +474,8 @@ window.SITE_DATA = {
             activeIndex = Math.max(0, Math.min(activeIndex, maxIndex));
             const viewport = track.closest('.blog-recommendations-viewport');
             const viewportWidth = viewport ? viewport.clientWidth : track.clientWidth;
-            const step = (viewportWidth + 18) / visibleCount;
+            const gap = 18;
+            const step = (viewportWidth + gap) / visibleCount;
             track.style.transform = `translateX(${-activeIndex * step}px)`;
             previousButton?.toggleAttribute('disabled', activeIndex === 0);
             nextButton?.toggleAttribute('disabled', activeIndex >= maxIndex);
@@ -505,6 +513,13 @@ window.SITE_DATA = {
         const track = document.querySelector('.blog-recommendations-track');
         if (!track || !data.blogFeed) return;
         const fallback = (data.blogFeed.fallback || []).slice(0, data.blogFeed.limit || 6);
+
+        // 手动模式：直接用 fallback，不请求 RSS、不抓封面，避免跨域报错。
+        if (data.blogFeed.autoFetch === false) {
+            renderBlogRecommendations(fallback);
+            return;
+        }
+
         let items = fallback;
         try {
             const response = await fetch(data.blogFeed.feedUrl, { mode: 'cors' });
@@ -691,6 +706,40 @@ window.SITE_DATA = {
         }
     }
 
+    // 详情页就绪闸门：图标加载完成（或失败）且名称已写入后，加载层才会消失。
+    function registerDetailReadyGate(section) {
+        window.__pageLoaderGates = window.__pageLoaderGates || [];
+
+        window.__pageLoaderGates.push(() => new Promise((resolve) => {
+            const icon = section.querySelector('.app-detail-icon');
+            const name = section.querySelector('#app-detail-name');
+            let settled = false;
+
+            const finish = () => {
+                if (settled) return;
+                settled = true;
+                resolve();
+            };
+
+            if (!name || !name.textContent.trim()) {
+                finish();
+                return;
+            }
+
+            const source = icon?.getAttribute('src');
+            if (!source || (icon.complete && icon.naturalWidth > 0)) {
+                finish();
+                return;
+            }
+
+            const probe = new Image();
+            probe.onload = finish;
+            probe.onerror = finish;
+            probe.src = source;
+            setTimeout(finish, 3000); // 兜底：图标再慢也最多等 3 秒
+        }));
+    }
+
     // --- 产品详情页 ---
     function renderProductDetail() {
         const section = document.querySelector('.app-detail-section');
@@ -711,6 +760,9 @@ window.SITE_DATA = {
 
         const name = section.querySelector('#app-detail-name');
         if (name) name.textContent = product.name || '';
+
+        // 图标和名称都对上之后再放行加载层，避免先闪出默认头像和默认名称
+        registerDetailReadyGate(section);
 
         const downloadButton = section.querySelector('.app-download-btn');
         if (downloadButton) {

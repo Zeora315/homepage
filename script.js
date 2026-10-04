@@ -199,6 +199,46 @@ navSectionMenu?.addEventListener('touchcancel', () => {
 let pageReadyShown = false;
 let pageReadyFallbackId = null;
 
+function hideLoadingLayer() {
+    const loadingAnimation = document.getElementById('loading-animation');
+    const navbar = document.querySelector('.navbar');
+
+    if (navbar) {
+        navbar.classList.add('show');
+    }
+
+    document.body.classList.add('hero-ready');
+
+    if (loadingAnimation) {
+        loadingAnimation.style.opacity = '0';
+        // 配置：加载层淡出后彻底隐藏的等待时间；要和 CSS transition duration 保持接近
+        setTimeout(function() {
+            loadingAnimation.style.display = 'none';
+        }, 500);
+    }
+}
+
+// 页面可以用 window.__pageLoaderGates 注册等待任务，加载层会等它们全部完成后再释放。
+function waitForContentGates() {
+    const gates = window.__pageLoaderGates || [];
+    if (gates.length === 0) return Promise.resolve();
+
+    const tasks = gates.map((gate) => {
+        try {
+            return Promise.resolve(gate());
+        } catch (error) {
+            return Promise.resolve();
+        }
+    });
+
+    // 配置：内容就绪等待上限；超过后强制进入页面，避免外部图片卡住加载层
+    const timeout = new Promise(function(resolve) {
+        setTimeout(resolve, 4000);
+    });
+
+    return Promise.race([Promise.all(tasks), timeout]);
+}
+
 function showPageReady() {
     if (pageReadyShown) return;
     pageReadyShown = true;
@@ -208,22 +248,7 @@ function showPageReady() {
 
     // 配置：首屏加载层最短展示时间；400ms 越小越快消失，越大动画停留越久
     setTimeout(function() {
-        const loadingAnimation = document.getElementById('loading-animation');
-        const navbar = document.querySelector('.navbar');
-
-        if (navbar) {
-            navbar.classList.add('show');
-        }
-
-        document.body.classList.add('hero-ready');
-
-        if (loadingAnimation) {
-            loadingAnimation.style.opacity = '0';
-            // 配置：加载层淡出后彻底隐藏的等待时间；要和 CSS transition duration 保持接近
-            setTimeout(function() {
-                loadingAnimation.style.display = 'none';
-            }, 500);
-        }
+        Promise.resolve(waitForContentGates()).then(hideLoadingLayer);
     }, 400);
 }
 
